@@ -1,0 +1,671 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "TodoList API",
+    "version": "1.0.0",
+    "description": "인증된 사용자별로 개인 할일(Todo)을 카테고리와 기간(시작일/종료일) 단위로 관리하는 API. 근거: docs/1-domain-definition.md, docs/2-prd.md §7."
+  },
+  "servers": [
+    { "url": "http://localhost:3000/api", "description": "로컬 개발 서버 (docs/5-project-principle.md §5 PORT 기본값 3000)" }
+  ],
+  "tags": [
+    { "name": "Auth", "description": "회원가입/로그인/토큰 (FR-01, FR-02)" },
+    { "name": "Users", "description": "회원정보 (FR-03)" },
+    { "name": "Categories", "description": "카테고리 (FR-04, BR-08, BR-09)" },
+    { "name": "Todos", "description": "할일 (FR-04~FR-08)" }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "access token (만료 15분). 만료 시 401, `/api/auth/refresh`로 재발급 (docs/5-project-principle.md §5, PRD §5)."
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "description": "도메인 정의서 §3.1 User",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "사용자 식별자 (PK)"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "로그인 계정, 시스템 전체 unique (BR-02)"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50,
+            "description": "사용자 이름, 1~50자"
+          },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        },
+        "required": ["id", "email", "name", "createdAt", "updatedAt"]
+      },
+      "Category": {
+        "type": "object",
+        "description": "도메인 정의서 §3.2 Category",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "카테고리 식별자 (PK)"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "소유 User (FK)"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 30,
+            "description": "카테고리명, 1~30자, (userId, name) unique. 예: '기본'"
+          }
+        },
+        "required": ["id", "userId", "name"]
+      },
+      "Todo": {
+        "type": "object",
+        "description": "도메인 정의서 §3.3 Todo",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "할일 식별자 (PK)"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "소유 User (FK)"
+          },
+          "categoryId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "소속 Category (FK). 등록 시 미지정이면 서버가 '기본' 카테고리 id로 채움 (BR-03)"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "할일 제목, 1~100자"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date",
+            "description": "시작일자 (시각 미포함)"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date",
+            "description": "종료일자 (시각 미포함), startDate 이상 (BR-05)"
+          },
+          "isDone": {
+            "type": "boolean",
+            "default": false,
+            "description": "완료 여부, 기본값 false"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["not_started", "in_progress", "done", "overdue"],
+            "description": "도메인 정의서 §5 파생 상태(저장 컬럼 아님). isDone=true면 done, 그 외 startDate/endDate와 오늘 날짜 비교로 판정."
+          },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        },
+        "required": [
+          "id",
+          "userId",
+          "categoryId",
+          "title",
+          "startDate",
+          "endDate",
+          "isDone",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "RegisterRequest": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string", "format": "email" },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "description": "평문으로 전송, 서버에서 해시 저장 (§3.1). 최소 8자."
+          },
+          "name": { "type": "string", "minLength": 1, "maxLength": 50 }
+        },
+        "required": ["email", "password", "name"]
+      },
+      "LoginRequest": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string", "format": "email" },
+          "password": { "type": "string" }
+        },
+        "required": ["email", "password"]
+      },
+      "AuthTokenResponse": {
+        "type": "object",
+        "description": "access token은 body로, refresh token은 HttpOnly+Secure+SameSite=Strict 쿠키로 전달되어 body에는 포함되지 않음 (docs/5-project-principle.md §5)",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "description": "JWT access token, 만료 15분"
+          },
+          "user": { "$ref": "#/components/schemas/User" }
+        },
+        "required": ["accessToken", "user"]
+      },
+      "RefreshResponse": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "description": "재발급된 JWT access token"
+          }
+        },
+        "required": ["accessToken"]
+      },
+      "UpdateUserRequest": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "minLength": 1, "maxLength": 50 }
+        }
+      },
+      "CreateCategoryRequest": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "minLength": 1, "maxLength": 30 }
+        },
+        "required": ["name"]
+      },
+      "CreateTodoRequest": {
+        "type": "object",
+        "properties": {
+          "categoryId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "미지정 시 서버가 '기본' 카테고리 자동 적용 (BR-03)"
+          },
+          "title": { "type": "string", "minLength": 1, "maxLength": 100 },
+          "startDate": { "type": "string", "format": "date" },
+          "endDate": {
+            "type": "string",
+            "format": "date",
+            "description": "startDate 이상이어야 함 (BR-05)"
+          }
+        },
+        "required": ["title", "startDate", "endDate"]
+      },
+      "UpdateTodoRequest": {
+        "type": "object",
+        "description": "부분 수정. title/categoryId/startDate/endDate/isDone 중 변경할 필드만 전달 (FR-07)",
+        "properties": {
+          "categoryId": { "type": "string", "format": "uuid" },
+          "title": { "type": "string", "minLength": 1, "maxLength": 100 },
+          "startDate": { "type": "string", "format": "date" },
+          "endDate": { "type": "string", "format": "date" },
+          "isDone": { "type": "boolean" }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "에러 코드 (예: VALIDATION_ERROR, UNAUTHORIZED, FORBIDDEN, NOT_FOUND, EMAIL_TAKEN, INVALID_DATE_RANGE, INVALID_CATEGORY, DEFAULT_CATEGORY_DELETE_FORBIDDEN)"
+          },
+          "message": {
+            "type": "string",
+            "description": "사람이 읽을 수 있는 에러 메시지"
+          }
+        },
+        "required": ["code", "message"]
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "요청 검증 실패 (필드 길이/필수값/BR-05 startDate<=endDate 위반 등)",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "미인증 접근 (access token 없음/만료/위조). BR-01: 회원가입/로그인 제외 모든 기능은 인증 필요.",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "소유권 위반 - 타인 소유 리소스 접근/수정/삭제 시도 (BR-06, BR-07)",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "리소스가 존재하지 않음",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "회원가입",
+        "description": "email/password/name으로 계정을 생성한다 (FR-01). 미인증 상태에서 접근 가능한 유일한 화면 중 하나 (BR-01). email은 시스템 전체 unique이며 중복 시 거부한다 (BR-02). 서버는 회원가입과 동시에 트랜잭션으로 해당 사용자의 '기본' Category를 자동 생성한다 (BR-09).",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/RegisterRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "회원가입 성공 (BR-09에 따라 '기본' Category도 함께 생성됨)",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/User" }
+              }
+            }
+          },
+          "400": {
+            "description": "필드 검증 실패 또는 이미 가입된 email (BR-02: EMAIL_TAKEN)",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "로그인",
+        "description": "email/password로 인증하고 access token + refresh token을 발급한다 (FR-02). access token은 응답 body로, refresh token은 HttpOnly 쿠키로 전달된다 (docs/5-project-principle.md §5).",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/LoginRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "로그인 성공",
+            "headers": {
+              "Set-Cookie": {
+                "schema": { "type": "string" },
+                "description": "refreshToken (HttpOnly, Secure, SameSite=Strict, 만료 7일)"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AuthTokenResponse" }
+              }
+            }
+          },
+          "400": {
+            "description": "email/password 형식 오류",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "401": {
+            "description": "email 또는 password 불일치",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "access token 재발급",
+        "description": "쿠키로 전달된 refresh token을 검증해 access token을 재발급한다 (FR-02). access token 만료(401) 시 클라이언트가 자동 호출한다 (PRD §6).",
+        "responses": {
+          "200": {
+            "description": "재발급 성공",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RefreshResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "refresh token 없음/만료/위조",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "로그아웃",
+        "description": "refresh token을 무효화하고 쿠키를 제거한다 (FR-02).",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "204": { "description": "로그아웃 성공 (본문 없음)" },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      }
+    },
+    "/users/me": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "내 정보 조회",
+        "description": "로그인한 본인의 회원정보를 조회한다 (FR-03).",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "조회 성공",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/User" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      },
+      "patch": {
+        "tags": ["Users"],
+        "summary": "내 정보 수정",
+        "description": "로그인한 본인의 name 등 정보를 수정한다 (FR-03). 회원정보 수정은 본인만 가능하다 (BR-07). 인증된 사용자 본인 리소스이므로 별도 리소스 id 없이 토큰 주체로 대상이 결정된다.",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateUserRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "수정 성공",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/User" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      }
+    },
+    "/categories": {
+      "get": {
+        "tags": ["Categories"],
+        "summary": "내 카테고리 목록 조회",
+        "description": "로그인한 본인 소유 Category 목록을 조회한다 (FR-04, BR-06). 모든 사용자는 최소 1개의 '기본' Category를 보유한다 (BR-09).",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "조회 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Category" }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      },
+      "post": {
+        "tags": ["Categories"],
+        "summary": "카테고리 생성",
+        "description": "본인 소유 Category를 생성한다 (FR-04 부속 기능). name은 1~30자이며 (userId, name) unique 제약을 가진다 (도메인 정의서 §3.2).",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateCategoryRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "생성 성공",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Category" }
+              }
+            }
+          },
+          "400": {
+            "description": "name 길이 위반 또는 동일 이름 카테고리 중복(unique 위반)",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      }
+    },
+    "/categories/{id}": {
+      "delete": {
+        "tags": ["Categories"],
+        "summary": "카테고리 삭제",
+        "description": "본인 소유 Category를 삭제한다. '기본' Category는 삭제할 수 없다 (BR-08). '기본'이 아닌 Category 삭제 시 소속 Todo는 모두 '기본' Category로 재배정된다 (BR-08, 트랜잭션 처리). 타인 소유 Category 접근 시 403 (BR-06).",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" },
+            "description": "삭제할 Category id"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "삭제 성공 (본문 없음). 소속 Todo는 '기본' Category로 재배정됨."
+          },
+          "400": {
+            "description": "'기본' Category 삭제 시도 (BR-08: DEFAULT_CATEGORY_DELETE_FORBIDDEN)",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/todos": {
+      "get": {
+        "tags": ["Todos"],
+        "summary": "내 Todo 목록 조회 및 필터링",
+        "description": "본인 소유 Todo 목록을 카테고리별/상태별로 필터링 조회한다 (FR-06, BR-06). status는 도메인 정의서 §5 파생 규칙(isDone 우선 판정)에 따라 서버가 startDate/endDate/isDone/오늘 날짜로 계산한다.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "format": "uuid" },
+            "description": "특정 Category로 필터링"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["not_started", "in_progress", "done", "overdue"]
+            },
+            "description": "파생 상태로 필터링 (§5)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "조회 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Todo" }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "categoryId가 UUID 형식이 아니거나 status가 허용 목록 밖의 값",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      },
+      "post": {
+        "tags": ["Todos"],
+        "summary": "Todo 생성",
+        "description": "본인 소유 Todo를 생성한다 (FR-04, FR-05). categoryId 미지정 시 서버가 본인의 '기본' Category id를 자동 적용한다 (BR-03). categoryId가 본인 소유가 아니거나 존재하지 않으면 거부한다 (BR-04). startDate <= endDate이어야 한다 (BR-05).",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateTodoRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "생성 성공",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Todo" }
+              }
+            }
+          },
+          "400": {
+            "description": "title 길이 위반, startDate > endDate(BR-05: INVALID_DATE_RANGE), categoryId 미소유/미존재(BR-04: INVALID_CATEGORY)",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      }
+    },
+    "/todos/{id}": {
+      "patch": {
+        "tags": ["Todos"],
+        "summary": "Todo 수정",
+        "description": "본인 소유 Todo의 title/categoryId/startDate/endDate/isDone을 수정한다 (FR-07). categoryId 변경 시 본인 소유/존재 검증(BR-04), startDate<=endDate 검증(BR-05)이 재적용된다. 타인 소유 Todo 접근 시 403 (BR-06).",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" },
+            "description": "수정할 Todo id"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateTodoRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "수정 성공",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Todo" }
+              }
+            }
+          },
+          "400": {
+            "description": "title 길이 위반, startDate > endDate(BR-05), categoryId 미소유/미존재(BR-04)",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "delete": {
+        "tags": ["Todos"],
+        "summary": "Todo 삭제",
+        "description": "본인 소유 Todo를 삭제한다 (FR-08, BR-06). 타인 소유 Todo 접근 시 403.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" },
+            "description": "삭제할 Todo id"
+          }
+        ],
+        "responses": {
+          "204": { "description": "삭제 성공 (본문 없음)" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    }
+  }
+}
