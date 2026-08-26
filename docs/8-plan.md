@@ -7,6 +7,7 @@
 | 0.1.0 | 2026-08-26 | 최초 작성 | -         |
 | 0.2.0 | 2026-08-26 | DB-01 완료 처리(전용 DB `todolist`/계정 `todolist_app` 생성, `DATABASE_URL` 확정) | Task 수행 완료 |
 | 0.3.0 | 2026-08-26 | DB-02(`todolist` DB에 schema.sql 적용), DB-03(`backend/src/db/pool.js` 작성 및 연결/에러 검증) 완료 처리 | Task 수행 완료 |
+| 0.4.0 | 2026-08-26 | BE-01 완료 처리(Express app/server/errorHandler/CORS/health, Jest+supertest 테스트 10건 전부 통과, 커버리지 100%) | Task 수행 완료 |
 
 ## 목차
 
@@ -66,10 +67,10 @@
 
 - **수행 작업**: Express 앱 초기화, `.env`/`.env.example`(`DATABASE_URL`, `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `PORT`, `CORS_ORIGIN`), CORS(allowlist + `credentials: true`), 요청 로깅 미들웨어, 공통 `errorHandler`, `GET /health` 엔드포인트.
 - **완료 조건**
-  - [ ] `npm run dev`(또는 동등 스크립트)로 서버 기동 성공
-  - [ ] `GET /health` 호출 시 DB 연결 상태 기반 200/500 응답 확인
-  - [ ] CORS 허용 오리진 외 요청이 차단되는지 확인
-  - [ ] 의도적 500 에러 발생 시 `errorHandler`가 일관된 JSON 에러 포맷으로 응답하는지 확인
+  - [x] `npm run dev`(또는 동등 스크립트)로 서버 기동 성공
+  - [x] `GET /health` 호출 시 DB 연결 상태 기반 200/500 응답 확인
+  - [x] CORS 허용 오리진 외 요청이 차단되는지 확인
+  - [x] 의도적 500 에러 발생 시 `errorHandler`가 일관된 JSON 에러 포맷으로 응답하는지 확인
 - **선행 Task**: DB-03
 
 ### BE-02. 인증 유틸(JWT/비밀번호)

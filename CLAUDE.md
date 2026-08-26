@@ -7,36 +7,39 @@
 
 ## 참조 문서
 
-| 문서명 | 경로 | 요약 |
-| --- | --- | --- |
-| 도메인 정의서 | `docs/1-domain-definition.md` | User/Category/Todo 엔티티, 용어정의, 비즈니스 규칙(BR-01~BR-09), Todo 상태(시작전/진행중/완료/지연) 판정 규칙, 요구사항(REQ-01/02) 추적표 |
-| PRD | `docs/2-prd.md` | 목표/범위, 기능요구사항(FR-01~FR-08), 비기능요구사항(동시접속 1000명, 반응형 UI), 기술스택(React19+TS+Zustand+TanStack Query / Node+Express+pg / PostgreSQL17), JWT access+refresh 인증, API 개요, 2일 일정 계획 |
-| 사용자 시나리오 | `docs/3-user-scenario.md` | FR-01~FR-08을 SC-01~SC-07 사용자 행동 흐름(사전조건/기본흐름/예외흐름/사후조건)으로 구체화 |
-| 와이어프레임 | `docs/4-wireframe.md` | 화면 단위 ASCII 와이어프레임(W-01 로그인/회원가입 탭 ~ W-05 삭제 확인 다이얼로그), 데스크톱/모바일 레이아웃, 상태뱃지·에러 표시 규칙 |
-| 프로젝트 구조 설계 원칙 | `docs/5-project-principle.md` | 최상위 공통원칙, 레이어/의존성 원칙(백엔드 route→controller→service→query, 프론트 FSD), 코드/네이밍 원칙, 테스트/보안/운영 원칙, 프론트·백엔드 디렉토리 구조 |
-| 아키텍처 다이어그램 | `docs/6-arch.md` | Mermaid 다이어그램 4종 — 시스템 구성도, 백엔드 레이어 흐름, 인증(access/refresh) 시퀀스, 프론트 FSD 레이어 의존 방향 |
-| ERD | `docs/7-erd.md` | Mermaid erDiagram — users/categories/todos 테이블 및 관계, 상태값이 파생 컬럼임을 명시 |
-| 실행 계획(WBS) | `docs/8-pan.md` | Database/Backend/Frontend 단위 Task 분할, Task별 수행작업·체크박스 완료조건·선행Task, 1일차/2일차 일정 매핑 |
-| DB 스키마 DDL | `docs/schema.sql` | PostgreSQL 17 DDL — users/categories/todos 테이블, PK/FK/UNIQUE/CHECK 제약, 인덱스 |
-| API 스펙 | `backend/swagger.json` | OpenAPI 3.0 스펙 — 인증/회원/카테고리/Todo 13개 엔드포인트, 요청·응답 스키마, 에러코드(400/401/403/404) |
+| 문서명                  | 경로                          | 요약                                                                                                                                                                                                             |
+| ----------------------- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 도메인 정의서           | `docs/1-domain-definition.md` | User/Category/Todo 엔티티, 용어정의, 비즈니스 규칙(BR-01~BR-09), Todo 상태(시작전/진행중/완료/지연) 판정 규칙, 요구사항(REQ-01/02) 추적표                                                                        |
+| PRD                     | `docs/2-prd.md`               | 목표/범위, 기능요구사항(FR-01~FR-08), 비기능요구사항(동시접속 1000명, 반응형 UI), 기술스택(React19+TS+Zustand+TanStack Query / Node+Express+pg / PostgreSQL17), JWT access+refresh 인증, API 개요, 2일 일정 계획 |
+| 사용자 시나리오         | `docs/3-user-scenario.md`     | FR-01~FR-08을 SC-01~SC-07 사용자 행동 흐름(사전조건/기본흐름/예외흐름/사후조건)으로 구체화                                                                                                                       |
+| 와이어프레임            | `docs/4-wireframe.md`         | 화면 단위 ASCII 와이어프레임(W-01 로그인/회원가입 탭 ~ W-05 삭제 확인 다이얼로그), 데스크톱/모바일 레이아웃, 상태뱃지·에러 표시 규칙                                                                             |
+| 프로젝트 구조 설계 원칙 | `docs/5-project-principle.md` | 최상위 공통원칙, 레이어/의존성 원칙(백엔드 route→controller→service→query, 프론트 FSD), 코드/네이밍 원칙, 테스트/보안/운영 원칙, 프론트·백엔드 디렉토리 구조                                                     |
+| 아키텍처 다이어그램     | `docs/6-arch.md`              | Mermaid 다이어그램 4종 — 시스템 구성도, 백엔드 레이어 흐름, 인증(access/refresh) 시퀀스, 프론트 FSD 레이어 의존 방향                                                                                             |
+| ERD                     | `docs/7-erd.md`               | Mermaid erDiagram — users/categories/todos 테이블 및 관계, 상태값이 파생 컬럼임을 명시                                                                                                                           |
+| 실행 계획(WBS)          | `docs/8-plan.md`              | Database/Backend/Frontend 단위 Task 분할, Task별 수행작업·체크박스 완료조건·선행Task, 1일차/2일차 일정 매핑                                                                                                      |
+| DB 스키마 DDL           | `docs/schema.sql`             | PostgreSQL 17 DDL — users/categories/todos 테이블, PK/FK/UNIQUE/CHECK 제약, 인덱스                                                                                                                               |
+| API 스펙                | `backend/swagger.json`        | OpenAPI 3.0 스펙 — 인증/회원/카테고리/Todo 13개 엔드포인트, 요청·응답 스키마, 에러코드(400/401/403/404)                                                                                                          |
 
 ## 코딩 시 행동 원칙 (Andrej Karpathy CLAUDE.md 요약)
 
 출처: https://raw.githubusercontent.com/multica-ai/andrej-karpathy-skills/refs/heads/main/CLAUDE.md — 흔한 LLM 코딩 실수를 줄이기 위한 원칙. 신속함보다 신중함에 무게를 두므로, 사소한 작업에는 판단해서 유연하게 적용한다.
 
 ### 1. 코딩 전에 생각하기
+
 - 가정을 임의로 하지 말고 명시적으로 밝힐 것. 불확실하면 먼저 질문할 것.
 - 해석이 여러 가지면 하나를 임의로 고르지 말고 선택지를 제시할 것.
 - 더 단순한 방법이 있으면 말할 것. 필요하면 반박(push back)할 것.
 - 불명확한 지점이 있으면 멈추고 무엇이 헷갈리는지 짚어 질문할 것.
 
 ### 2. 단순함 우선
+
 - 문제를 해결하는 최소한의 코드만 작성. 추측성 코드 금지.
 - 요청받지 않은 기능/추상화/유연성·설정 옵션을 추가하지 말 것.
 - 발생할 수 없는 상황에 대한 에러 처리 금지.
 - 200줄로 짤 걸 50줄로 줄일 수 있다면 다시 쓸 것. "시니어 엔지니어가 보기에 과하다" 싶으면 단순화.
 
 ### 3. 외과적(surgical) 수정
+
 - 반드시 건드려야 할 부분만 수정. 관련 없는 코드/주석/포맷팅은 "개선"하지 말 것.
 - 깨지지 않은 걸 리팩터링하지 말 것. 기존 스타일을 (취향이 달라도) 그대로 따를 것.
 - 관련 없는 죽은 코드를 발견하면 삭제하지 말고 언급만 할 것.
@@ -44,6 +47,7 @@
 - 기준: 변경한 모든 줄은 사용자 요청과 직접 연결되어야 한다.
 
 ### 4. 목표 지향적 실행
+
 - 작업을 검증 가능한 목표로 바꿀 것. 예: "검증 추가" → "잘못된 입력에 대한 테스트를 작성하고 통과시키기", "버그 수정" → "버그를 재현하는 테스트를 작성하고 통과시키기".
 - 여러 단계 작업은 짧게 계획을 명시: `[단계] → 검증: [확인방법]` 형식.
 - 성공 기준이 명확할수록 독립적으로 반복 작업 가능. "일단 되게 하기" 같은 약한 기준은 계속된 확인 질문을 유발.
