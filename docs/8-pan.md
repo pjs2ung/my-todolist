@@ -5,6 +5,8 @@
 | 버전  | 날짜       | 변경 내용 | 변경 사유 |
 | ----- | ---------- | --------- | --------- |
 | 0.1.0 | 2026-08-26 | 최초 작성 | -         |
+| 0.2.0 | 2026-08-26 | DB-01 완료 처리(전용 DB `todolist`/계정 `todolist_app` 생성, `DATABASE_URL` 확정) | Task 수행 완료 |
+| 0.3.0 | 2026-08-26 | DB-02(`todolist` DB에 schema.sql 적용), DB-03(`backend/src/db/pool.js` 작성 및 연결/에러 검증) 완료 처리 | Task 수행 완료 |
 
 ## 목차
 
@@ -29,29 +31,29 @@
 
 - **수행 작업**: PostgreSQL 17 인스턴스 준비(로컬 또는 개발 서버), 접속 계정 생성, `DATABASE_URL` 확정.
 - **완료 조건**
-  - [ ] PostgreSQL 17 인스턴스에 `psql`로 접속 성공
-  - [ ] 애플리케이션 전용 DB(`todolist`) 및 사용자 계정 생성 완료
-  - [ ] `DATABASE_URL` 값 확정 및 로컬에 임시 기록(커밋 금지)
+  - [x] PostgreSQL 17 인스턴스에 `psql`로 접속 성공
+  - [x] 애플리케이션 전용 DB(`todolist`) 및 사용자 계정 생성 완료
+  - [x] `DATABASE_URL` 값 확정 및 로컬에 임시 기록(커밋 금지)
 - **선행 Task**: 없음
 
 ### DB-02. 스키마 적용 (`docs/schema.sql`)
 
 - **수행 작업**: `docs/schema.sql`을 대상 DB에 실행하여 `pgcrypto` 확장, `users`/`categories`/`todos` 테이블, FK·CHECK·UNIQUE 제약, 인덱스(`idx_categories_user_id`, `idx_todos_user_id`, `idx_todos_user_category`)를 생성한다.
 - **완료 조건**
-  - [ ] `CREATE EXTENSION pgcrypto` 정상 실행
-  - [ ] `users`, `categories`, `todos` 3개 테이블 생성 확인(`\dt`)
-  - [ ] `categories(user_id, name)` UNIQUE, `users.email` UNIQUE 제약 존재 확인
-  - [ ] `todos` CHECK(`end_date >= start_date`), FK(`user_id`→users, `category_id`→categories, `ON DELETE RESTRICT`) 존재 확인
-  - [ ] 3개 인덱스 생성 확인(`\di`)
+  - [x] `CREATE EXTENSION pgcrypto` 정상 실행
+  - [x] `users`, `categories`, `todos` 3개 테이블 생성 확인(`\dt`)
+  - [x] `categories(user_id, name)` UNIQUE, `users.email` UNIQUE 제약 존재 확인
+  - [x] `todos` CHECK(`end_date >= start_date`), FK(`user_id`→users, `category_id`→categories, `ON DELETE RESTRICT`) 존재 확인
+  - [x] 3개 인덱스 생성 확인(`\di`)
 - **선행 Task**: DB-01
 
 ### DB-03. pg 커넥션 풀 모듈
 
 - **수행 작업**: 백엔드에서 사용할 `pg Pool` 설정 모듈 작성(PRD §5 기준 `max: 20`), 연결 성공/실패 로그 처리.
 - **완료 조건**
-  - [ ] `pool.js`(또는 동등 모듈)에서 `new Pool({ connectionString: DATABASE_URL, max: 20 })` 구성 완료
-  - [ ] 로컬에서 테스트 쿼리(`SELECT 1`) 실행 성공
-  - [ ] 커넥션 실패 시 프로세스가 명확한 에러 로그와 함께 종료/재시도되는지 확인
+  - [x] `pool.js`(또는 동등 모듈)에서 `new Pool({ connectionString: DATABASE_URL, max: 20 })` 구성 완료
+  - [x] 로컬에서 테스트 쿼리(`SELECT 1`) 실행 성공
+  - [x] 커넥션 실패 시 프로세스가 명확한 에러 로그와 함께 종료/재시도되는지 확인
 - **선행 Task**: DB-02
 
 ---
