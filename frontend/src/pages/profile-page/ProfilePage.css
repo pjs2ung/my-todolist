@@ -1,0 +1,19 @@
+.profile-page {
+  max-width: 420px;
+  margin: 40px auto;
+  padding: 24px;
+  font-family: -apple-system, 'Segoe UI', 'Malgun Gothic', sans-serif;
+}
+
+.profile-page-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0b1d4d;
+  margin: 0 0 20px;
+}
+
+.profile-page-error {
+  font-size: 14px;
+  color: #e5484d;
+  margin: 0;
+}

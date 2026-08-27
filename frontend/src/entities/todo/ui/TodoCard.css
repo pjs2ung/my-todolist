@@ -1,0 +1,27 @@
+.todo-card {
+  border: 1px solid #d6deef;
+  border-radius: 12px;
+  padding: 20px;
+  background-color: #ffffff;
+  font-family: -apple-system, 'Segoe UI', 'Malgun Gothic', sans-serif;
+}
+
+.todo-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.todo-card-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0b1d4d;
+  margin: 0;
+}
+
+.todo-card-meta {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #5b667a;
+}

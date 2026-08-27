@@ -19,6 +19,7 @@
 | 실행 계획(WBS)          | `docs/8-plan.md`              | Database/Backend/Frontend 단위 Task 분할, Task별 수행작업·체크박스 완료조건·선행Task, 1일차/2일차 일정 매핑                                                                                                      |
 | DB 스키마 DDL           | `docs/schema.sql`             | PostgreSQL 17 DDL — users/categories/todos 테이블, PK/FK/UNIQUE/CHECK 제약, 인덱스                                                                                                                               |
 | API 스펙                | `backend/swagger.json`        | OpenAPI 3.0 스펙 — 인증/회원/카테고리/Todo 13개 엔드포인트, 요청·응답 스키마, 에러코드(400/401/403/404)                                                                                                          |
+| 스타일 가이드           | `docs/9-style.md`             | 컬러 팔레트, 타이포그래피, 버튼/카드 스타일, 상태뱃지 색상 매핑                                                                                                                                                  |
 
 ## 코딩 시 행동 원칙 (Andrej Karpathy CLAUDE.md 요약)
 

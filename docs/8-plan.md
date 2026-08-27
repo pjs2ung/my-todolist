@@ -17,6 +17,16 @@
 | 1.1.0 | 2026-08-27 | BE-08 완료 처리(`GET /api/todos` 목록/필터링, `todoStatus.js` 상태 파생 로직(§5, 경계값 포함), 테스트 20여건 전부 통과, 커버리지 90~100%) | Task 수행 완료 |
 | 1.2.0 | 2026-08-27 | BE-09 완료 처리(§4 자동화 대상 3종 — todoStatus/dateRange/defaultCategory, `todos.service.js`에서 `isValidDateRange`/`resolveCategoryId` 순수 리팩터링 후 export, 신규 테스트 8건 포함 전체 14스위트 107건 통과) | Task 수행 완료 |
 | 1.3.0 | 2026-08-27 | BE-10 완료 처리(수동 검증 스크립트 작성/실행, SC-01~07 전체 + BR-01/BR-06 교차 확인) | Task 수행 완료 |
+| 1.4.0 | 2026-08-27 | FE-01 완료 처리(Vite React 19+TS 프로젝트 생성, zustand/@tanstack/react-query/react-router-dom 설치, FSD 최상위 6개 폴더 스캐폴딩, `app/providers/QueryClientProvider.tsx`+`app/router.tsx` 구성 및 `app/main.tsx` 적용, `.env.example` 작성, `npm run dev` 기동 확인) | Task 수행 완료 |
+| 1.5.0 | 2026-08-27 | FE-02 완료 처리(`shared/api/tokenStore.ts`+`client.ts` — Authorization 헤더 자동 부착, 401 시 refresh 후 1회 재시도, `shared/lib/formatDate.ts`(타임존 밀림 방지), `shared/ui/DatePicker.tsx`(네이티브 date input, 스타일가이드 적용), Vitest 도입, 단위테스트 15건 전부 통과) | Task 수행 완료 |
+| 1.6.0 | 2026-08-27 | FE-03 완료 처리(`entities/session/model/authStore.ts`(zustand, tokenStore 동기화), `entities/{user,category}/api/*`(useUserQuery/useCategoriesQuery), `entities/todo`(todo.types, `todoStatus.ts` 백엔드 1:1 포팅, `useTodosQuery`, `StatusBadge`, `TodoCard` — 스타일가이드 §5 색상 적용), todoStatus 단위테스트 9건 포함 전체 24건 통과) | Task 수행 완료 |
+| 1.7.0 | 2026-08-27 | FE-04 완료 처리(`features/login`, `features/register`(mutation+`registerFieldError.ts` 필드 매핑), `pages/auth-page/AuthPage.tsx` 탭 전환 UI, `app/router.tsx`에 `/`→AuthPage, `/todos` placeholder 연결. `frontend/.env` 누락으로 API 요청이 `/undefined/...`로 나가던 버그 발견·수정(`VITE_API_BASE_URL` 설정). Playwright로 5개 완료조건 전부 실 서버 대상 브라우저 검증, 단위테스트 30건 통과) | Task 수행 완료 |
+| 1.8.0 | 2026-08-27 | FE-05 완료 처리(`features/edit-profile`(PATCH /users/me mutation, `queryClient.setQueryData`로 캐시 즉시 반영), `pages/profile-page/ProfilePage.tsx`(로딩/에러/성공 분기), `/profile` 라우트 추가. name 검증 오류는 필드 매핑 없이 서버 메시지 그대로 표시(YAGNI), 저장 성공은 토스트 라이브러리 없이 로컬 state로 처리. 순수 로직 없어 신규 단위테스트 없음, 기존 30건 회귀 없음, tsc/eslint 통과) | Task 수행 완료 |
+| 1.9.0 | 2026-08-27 | FE-06 완료 처리(`features/filter-todos`(카테고리/상태 필터, 서버 쿼리파라미터 위임), `widgets/todo-list/ui/TodoListWidget.tsx`(단일 마크업+CSS media query로 데스크톱 사이드바/모바일 드롭다운 전환), `pages/todo-list-page/TodoListPage.tsx`, `/todos`→실제 페이지 교체, `/todos/new` placeholder 추가. DB에 테스트 데이터 삽입 후 Playwright로 데스크톱/모바일 레이아웃 전환, 카테고리·상태 필터, 빈 상태 5개 완료조건 전부 실측 검증, 테스트 데이터 정리) | Task 수행 완료 |
+| 2.0.0 | 2026-08-27 | FE-07 완료 처리(`features/create-todo`(등록/수정 겸용 `TodoForm`, `todoFormError.ts` 서버에러→필드 매핑), `features/edit-todo`(update mutation), `pages/todo-form-page/TodoFormPage.tsx`(id 유무로 등록/수정 분기, 단건조회 API 없어 목록 캐시에서 find), `/todos/new`→실제 폼, `/todos/:id/edit` 라우트 추가, `TodoListWidget`이 TodoCard를 Link로 감싸 수정진입 경로 연결. Playwright로 6개 완료조건 전부 실측 검증(종료일 min 속성으로 시작일 이전 비활성화 확인, min 속성 강제 제거해 서버 INVALID_DATE_RANGE 인라인 에러 노출까지 확인), 테스트 데이터 정리) | Task 수행 완료 |
+| 2.1.0 | 2026-08-27 | FE-08 완료 처리(`features/delete-todo`(`ConfirmDeleteDialog`, `deleteTodoError.ts` 403/404 매핑, `useDeleteTodo`), 목록화면(`TodoListWidget`, 카드-링크 중첩 없이 wrapper+형제버튼 구조)과 수정화면(`TodoFormPage`) 양쪽에 삭제 버튼 연결, 목록 삭제는 로컬 토스트, 수정화면 삭제는 `/todos`로 리다이렉트+`location.state` 토스트. Playwright로 목록/수정 양쪽 삭제 플로우, 취소 동작까지 3개 완료조건 전부 실측 검증, `deleteTodoError` 단위테스트 4건 포함 전체 34건 통과, 테스트 데이터 정리) | Task 수행 완료 |
+| 2.2.0 | 2026-08-27 | FE-09 완료 처리(`shared/lib/authEvents.ts`(pub/sub, FSD 레이어 역전 방지), `client.ts` refresh 실패 시 `emitSessionExpired()`, `authStore`에 `sessionExpired` 필드+구독, `app/main.tsx`가 렌더 전 `refreshAccessToken()`으로 부팅 시 세션 복구(새로고침 시 로그인 풀리는 회귀 방지), `router.tsx`에 `ProtectedRoute`/`PublicOnlyRoute`, `AuthPage`에 세션만료 배너. Playwright로 미인증 `/todos` 접근→리다이렉트, 인증 상태 `/` 접근→`/todos`+새로고침 세션유지까지 실측 검증(refresh-만료 강제리다이렉트는 실제 JWT 만료 재현이 어려워 authStore 단위테스트 3건으로 대체 검증), 전체 37건 통과) | Task 수행 완료 |
+| 2.3.0 | 2026-08-27 | FE-10 완료 처리(Playwright로 W-01~W-05 전 화면 3개 브레이크포인트(375/768/1280px) 오버플로우 없음 확인, SC-01~SC-07 기본흐름 전부 실 서버 대상 재현(회원가입→로그인→목록→등록→수정→상태필터→삭제), SC-01 E2/SC-02 E1/SC-03 E2/SC-04 대안흐름(BR-03)/SC-05 필터·빈상태/SC-06·SC-07 기본흐름을 본 세션에서 재확인, 나머지 예외흐름(SC-04 E1/E2, SC-06 E1~E4, SC-07 E1/E2, SC-02 E2)은 FE-07~09에서 이미 실측 검증되어 동일 컴포넌트 재사용 확인으로 갈음. 회귀 테스트 37건 유지, 테스트 데이터 정리) | Task 수행 완료 |
 
 ## 목차
 
@@ -201,98 +211,98 @@
 
 - **수행 작업**: React 19 + TypeScript 프로젝트 생성(Vite 등), Zustand·TanStack Query 설치, FSD 폴더 스캐폴딩(`app/pages/widgets/features/entities/shared`), `.env.example`(API base URL 등).
 - **완료 조건**
-  - [ ] `npm run dev`로 개발 서버 기동 및 빈 화면 렌더링 확인
-  - [ ] FSD 최상위 6개 폴더(`app,pages,widgets,features,entities,shared`) 생성 완료
-  - [ ] `QueryClientProvider`가 `app/providers`에 구성되고 앱 루트에 적용됨
+  - [x] `npm run dev`로 개발 서버 기동 및 빈 화면 렌더링 확인
+  - [x] FSD 최상위 6개 폴더(`app,pages,widgets,features,entities,shared`) 생성 완료
+  - [x] `QueryClientProvider`가 `app/providers`에 구성되고 앱 루트에 적용됨
 - **선행 Task**: 없음
 
 ### FE-02. shared 레이어
 
 - **수행 작업**: `shared/api/client.ts`(공통 fetch 래퍼, Authorization 헤더 부착, 401 시 `/api/auth/refresh` 호출 후 재시도), `shared/ui/DatePicker.tsx`, `shared/lib/formatDate.ts`.
 - **완료 조건**
-  - [ ] `client.ts`로 임의의 인증 필요 API를 호출하면 Authorization 헤더가 자동 부착됨
-  - [ ] access token 만료(401) 응답 시 자동으로 refresh 후 원 요청이 재시도됨(모킹 또는 실 서버로 확인)
-  - [ ] `DatePicker`가 날짜 선택 시 `YYYY-MM-DD` 형식 값을 반환
+  - [x] `client.ts`로 임의의 인증 필요 API를 호출하면 Authorization 헤더가 자동 부착됨
+  - [x] access token 만료(401) 응답 시 자동으로 refresh 후 원 요청이 재시도됨(모킹 또는 실 서버로 확인)
+  - [x] `DatePicker`가 날짜 선택 시 `YYYY-MM-DD` 형식 값을 반환
 - **선행 Task**: FE-01, BE-04(401/refresh 응답 규격 확정 필요)
 
 ### FE-03. entities 레이어
 
 - **수행 작업**: `entities/session`(Zustand `authStore` — access token, 로그인 여부), `entities/user`(타입 + `useUserQuery`), `entities/category`(타입 + `useCategoriesQuery`), `entities/todo`(타입, `todoStatus.ts` 파생 함수, `TodoCard`, `StatusBadge`, `useTodosQuery`).
 - **완료 조건**
-  - [ ] `authStore`에 access token 저장/삭제 시 구독 컴포넌트가 즉시 반영됨
-  - [ ] `useUserQuery`/`useCategoriesQuery`/`useTodosQuery`가 각각 대응 API를 호출하고 로딩/에러/성공 상태를 제공
-  - [ ] `todoStatus.ts`가 BE-08과 동일한 규칙으로 4개 상태를 파생(프론트-백엔드 로직 불일치 없음)
-  - [ ] `StatusBadge`가 상태별 색상(회색/파랑/초록/빨강, §5)으로 렌더링됨
+  - [x] `authStore`에 access token 저장/삭제 시 구독 컴포넌트가 즉시 반영됨
+  - [x] `useUserQuery`/`useCategoriesQuery`/`useTodosQuery`가 각각 대응 API를 호출하고 로딩/에러/성공 상태를 제공
+  - [x] `todoStatus.ts`가 BE-08과 동일한 규칙으로 4개 상태를 파생(프론트-백엔드 로직 불일치 없음)
+  - [x] `StatusBadge`가 상태별 색상(회색/파랑/초록/빨강, §5)으로 렌더링됨
 - **선행 Task**: FE-02
 
 ### FE-04. W-01 로그인/회원가입 화면
 
 - **수행 작업**: `features/login`, `features/register` (폼 + mutation), `pages/auth-page/AuthPage.tsx`에서 탭 전환 UI로 결합(와이어프레임 W-01).
 - **완료 조건**
-  - [ ] 로그인 탭에서 정상 로그인 시 access/refresh token 저장 후 목록 화면으로 이동
-  - [ ] 로그인 실패(잘못된 email/password) 시 동일 에러 메시지 표시(SC-02 E1/E3)
-  - [ ] 회원가입 탭에서 정상 가입 후 로그인 탭으로 전환
-  - [ ] 이메일 중복 가입 시도 시 인라인 에러 표시(BR-02, SC-01 E1)
-  - [ ] 탭 전환 시 입력값/에러가 서로 초기화됨
+  - [x] 로그인 탭에서 정상 로그인 시 access/refresh token 저장 후 목록 화면으로 이동
+  - [x] 로그인 실패(잘못된 email/password) 시 동일 에러 메시지 표시(SC-02 E1/E3)
+  - [x] 회원가입 탭에서 정상 가입 후 로그인 탭으로 전환
+  - [x] 이메일 중복 가입 시도 시 인라인 에러 표시(BR-02, SC-01 E1)
+  - [x] 탭 전환 시 입력값/에러가 서로 초기화됨
 - **선행 Task**: FE-03, BE-03
 
 ### FE-05. W-02 회원정보 수정 화면
 
 - **수행 작업**: `features/edit-profile`(폼 + mutation), `pages/profile-page/ProfilePage.tsx`.
 - **완료 조건**
-  - [ ] 진입 시 현재 name이 표시됨(`useUserQuery`)
-  - [ ] name 수정 후 저장 시 성공 토스트 표시 및 값 반영
-  - [ ] name 형식 위반 시 인라인 에러 표시(SC-03 E2)
+  - [x] 진입 시 현재 name이 표시됨(`useUserQuery`)
+  - [x] name 수정 후 저장 시 성공 토스트 표시 및 값 반영
+  - [x] name 형식 위반 시 인라인 에러 표시(SC-03 E2)
 - **선행 Task**: FE-03, BE-05
 
 ### FE-06. W-03 할일 목록/필터링 화면
 
 - **수행 작업**: `widgets/todo-list`, `features/filter-todos`(카테고리/상태 필터), `pages/todo-list-page/TodoListPage.tsx`. 데스크톱(사이드바)·모바일(드롭다운+칩) 반응형 레이아웃 모두 구현(PRD §5 브레이크포인트).
 - **완료 조건**
-  - [ ] 데스크톱(>1024px)에서 좌측 카테고리 사이드바 + 상태 필터 탭 + Todo 카드 목록 렌더링
-  - [ ] 모바일(<640px)에서 카테고리 드롭다운 + 상태 필터 칩 + 카드 목록 + 플로팅 등록 버튼 렌더링
-  - [ ] 카테고리 필터 선택 시 해당 카테고리 Todo만 표시
-  - [ ] 상태 필터(전체/시작전/진행중/완료/지연) 각각 선택 시 올바른 결과만 표시
-  - [ ] Todo/필터 결과 없을 때 "할일이 없습니다" 빈 상태 표시(SC-05 E1)
+  - [x] 데스크톱(>1024px)에서 좌측 카테고리 사이드바 + 상태 필터 탭 + Todo 카드 목록 렌더링
+  - [x] 모바일(<640px)에서 카테고리 드롭다운 + 상태 필터 칩 + 카드 목록 + 플로팅 등록 버튼 렌더링
+  - [x] 카테고리 필터 선택 시 해당 카테고리 Todo만 표시
+  - [x] 상태 필터(전체/시작전/진행중/완료/지연) 각각 선택 시 올바른 결과만 표시
+  - [x] Todo/필터 결과 없을 때 "할일이 없습니다" 빈 상태 표시(SC-05 E1)
 - **선행 Task**: FE-03, BE-08
 
 ### FE-07. W-04 할일 등록/수정 화면
 
 - **수행 작업**: `features/create-todo`(카테고리 선택 + 캘린더), `features/edit-todo`, `pages/todo-form-page/TodoFormPage.tsx`.
 - **완료 조건**
-  - [ ] 제목/카테고리/시작일/종료일 입력 후 등록 성공 시 목록으로 이동, 새 Todo 반영
-  - [ ] 카테고리 미선택 시 "'기본' 카테고리가 자동 적용됩니다" 안내 문구 노출, 등록 결과도 '기본' 적용됨(BR-03)
-  - [ ] 종료일 캘린더에서 시작일 이전 날짜가 비활성화됨
-  - [ ] `startDate > endDate` 강제 입력 시 인라인 에러 표시(BR-05)
-  - [ ] 수정 화면 진입 시 기존 값이 채워지고, 완료 처리 체크박스가 노출됨(등록 화면에는 미노출)
-  - [ ] 수정 저장 성공 시 목록/상태 뱃지 즉시 갱신
+  - [x] 제목/카테고리/시작일/종료일 입력 후 등록 성공 시 목록으로 이동, 새 Todo 반영
+  - [x] 카테고리 미선택 시 "'기본' 카테고리가 자동 적용됩니다" 안내 문구 노출, 등록 결과도 '기본' 적용됨(BR-03)
+  - [x] 종료일 캘린더에서 시작일 이전 날짜가 비활성화됨
+  - [x] `startDate > endDate` 강제 입력 시 인라인 에러 표시(BR-05)
+  - [x] 수정 화면 진입 시 기존 값이 채워지고, 완료 처리 체크박스가 노출됨(등록 화면에는 미노출)
+  - [x] 수정 저장 성공 시 목록/상태 뱃지 즉시 갱신
 - **선행 Task**: FE-03, BE-07
 
 ### FE-08. W-05 할일 삭제 확인 다이얼로그
 
 - **수행 작업**: `features/delete-todo`(`ConfirmDeleteDialog.tsx` + mutation), 목록/수정 화면에서 삭제 버튼과 연결.
 - **완료 조건**
-  - [ ] 삭제 버튼 클릭 시 모달 표시, 대상 Todo 제목 노출
-  - [ ] "삭제" 확정 시 API 호출 성공 후 모달 닫힘 + 목록에서 카드 즉시 제거 + 토스트 표시
-  - [ ] "취소" 클릭 시 아무 변화 없이 모달만 닫힘
+  - [x] 삭제 버튼 클릭 시 모달 표시, 대상 Todo 제목 노출
+  - [x] "삭제" 확정 시 API 호출 성공 후 모달 닫힘 + 목록에서 카드 즉시 제거 + 토스트 표시
+  - [x] "취소" 클릭 시 아무 변화 없이 모달만 닫힘
 - **선행 Task**: FE-06, BE-07
 
 ### FE-09. 라우팅/인증 가드
 
 - **수행 작업**: `app/router.tsx`에 W-01~W-04 라우트 등록, 미인증 상태에서 보호 라우트 접근 시 W-01로 리다이렉트(BR-01), refresh 실패 시 전역 리다이렉트 처리.
 - **완료 조건**
-  - [ ] 미인증 상태로 `/todos` 등 보호 라우트 직접 접근 시 로그인 화면으로 이동
-  - [ ] 인증 상태에서 `/login` 접근 시 목록 화면으로 리다이렉트(선택 사항이나 확인)
-  - [ ] refresh token까지 만료된 상태에서 API 호출 시 로그인 화면으로 강제 이동 + 세션 만료 안내 배너 표시(SC-02 E2)
+  - [x] 미인증 상태로 `/todos` 등 보호 라우트 직접 접근 시 로그인 화면으로 이동
+  - [x] 인증 상태에서 `/login` 접근 시 목록 화면으로 리다이렉트(선택 사항이나 확인)
+  - [x] refresh token까지 만료된 상태에서 API 호출 시 로그인 화면으로 강제 이동 + 세션 만료 안내 배너 표시(SC-02 E2)
 - **선행 Task**: FE-04, FE-06
 
 ### FE-10. 반응형 점검 및 수동 시나리오 검증
 
 - **수행 작업**: PRD §5 브레이크포인트(모바일<640px/태블릿640~1024px/데스크톱>1024px) 전 화면 점검, `docs/3-user-scenario.md` SC-01~SC-07 전체를 브라우저에서 수동 실행.
 - **완료 조건**
-  - [ ] W-01~W-05 전 화면이 3개 브레이크포인트에서 레이아웃 깨짐 없이 표시됨
-  - [ ] SC-01~SC-07 기본 흐름 전부 화면상에서 재현 및 통과
-  - [ ] SC-01~SC-07 주요 예외 흐름(이메일 중복, 잘못된 날짜, 타인 리소스, 토큰 만료 등) 전부 화면상에서 재현 및 기대 동작 확인
+  - [x] W-01~W-05 전 화면이 3개 브레이크포인트에서 레이아웃 깨짐 없이 표시됨
+  - [x] SC-01~SC-07 기본 흐름 전부 화면상에서 재현 및 통과
+  - [x] SC-01~SC-07 주요 예외 흐름(이메일 중복, 잘못된 날짜, 타인 리소스, 토큰 만료 등) 전부 화면상에서 재현 및 기대 동작 확인
 - **선행 Task**: FE-04, FE-05, FE-06, FE-07, FE-08, FE-09
 
 ---

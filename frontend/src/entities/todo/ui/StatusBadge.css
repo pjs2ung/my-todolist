@@ -1,0 +1,29 @@
+.todo-status-badge {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: -apple-system, 'Segoe UI', 'Malgun Gothic', sans-serif;
+  white-space: nowrap;
+}
+
+.todo-status-badge--not_started {
+  background-color: #e4e8f1;
+  color: #5b667a;
+}
+
+.todo-status-badge--in_progress {
+  background-color: #2f8cff;
+  color: #ffffff;
+}
+
+.todo-status-badge--done {
+  background-color: #2fbf71;
+  color: #ffffff;
+}
+
+.todo-status-badge--overdue {
+  background-color: #e5484d;
+  color: #ffffff;
+}

@@ -1,0 +1,135 @@
+.todo-list-widget {
+  display: flex;
+  gap: 24px;
+  padding: 24px;
+  font-family: -apple-system, 'Segoe UI', 'Malgun Gothic', sans-serif;
+}
+
+.todo-list-sidebar {
+  width: 200px;
+  flex-shrink: 0;
+}
+
+.todo-list-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.todo-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.todo-list-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0b1d4d;
+  margin: 0;
+}
+
+.todo-list-add-button {
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  background-color: #2f8cff;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.todo-list-add-button:hover {
+  background-color: #1e6fd9;
+}
+
+.todo-list-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.todo-list-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.todo-list-card-wrapper {
+  position: relative;
+}
+
+.todo-list-card-wrapper .todo-card {
+  padding-bottom: 44px;
+}
+
+.todo-list-card-delete-button {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  border: 1px solid #e5484d;
+  border-radius: 6px;
+  padding: 6px 12px;
+  background-color: #ffffff;
+  color: #e5484d;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.todo-list-card-delete-button:hover {
+  background-color: rgba(229, 72, 77, 0.1);
+}
+
+.todo-list-toast {
+  color: #2fbf71;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.todo-list-empty {
+  text-align: center;
+  color: #5b667a;
+  font-size: 15px;
+  padding: 40px 0;
+}
+
+.todo-list-error {
+  color: #e5484d;
+  font-size: 14px;
+}
+
+@media (max-width: 1024.1px) {
+  .todo-list-widget {
+    flex-direction: column;
+    padding: 16px;
+  }
+
+  .todo-list-sidebar {
+    width: 100%;
+  }
+
+  .todo-list-add-button {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    border-radius: 999px;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    font-size: 28px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .todo-list-add-button-label {
+    display: none;
+  }
+}

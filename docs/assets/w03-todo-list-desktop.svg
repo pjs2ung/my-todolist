@@ -1,0 +1,98 @@
+<svg width="1200" height="720" viewBox="0 0 1200 720" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, 'Segoe UI', 'Malgun Gothic', sans-serif">
+  <!-- 배경: style §6 라이트 배경 유지 방침 -->
+  <rect width="1200" height="720" fill="#F5F7FB"/>
+
+  <!-- 상단 헤더 -->
+  <rect x="0" y="0" width="1200" height="64" fill="#FFFFFF"/>
+  <line x1="0" y1="64" x2="1200" y2="64" stroke="#E4E8F1" stroke-width="1"/>
+  <text x="32" y="40" font-size="20" font-weight="800" fill="#0B1D4D">TodoList</text>
+  <text x="1040" y="38" font-size="14" font-weight="600" fill="#2F8CFF">내 정보</text>
+  <text x="1120" y="38" font-size="14" font-weight="600" fill="#5B667A">로그아웃</text>
+
+  <!-- 좌측 카테고리 사이드바 -->
+  <rect x="0" y="64" width="220" height="656" fill="#FFFFFF"/>
+  <line x1="220" y1="64" x2="220" y2="720" stroke="#E4E8F1" stroke-width="1"/>
+  <text x="24" y="104" font-size="13" font-weight="700" fill="#8792A6">카테고리</text>
+
+  <rect x="16" y="120" width="188" height="40" rx="8" fill="#2F8CFF"/>
+  <text x="32" y="145" font-size="14" font-weight="600" fill="#FFFFFF">전체</text>
+
+  <rect x="16" y="168" width="188" height="40" rx="8" fill="#F5F7FB"/>
+  <text x="32" y="193" font-size="14" fill="#2A3142">기본 (12)</text>
+
+  <rect x="16" y="216" width="188" height="40" rx="8" fill="#F5F7FB"/>
+  <text x="32" y="241" font-size="14" fill="#2A3142">업무 (5)</text>
+
+  <rect x="16" y="264" width="188" height="40" rx="8" fill="#F5F7FB"/>
+  <text x="32" y="289" font-size="14" fill="#2A3142">개인 (3)</text>
+
+  <!-- 메인 영역 -->
+  <text x="248" y="106" font-size="22" font-weight="800" fill="#0B1D4D">할일 목록</text>
+
+  <!-- Filled Primary 버튼: style §3 -->
+  <rect x="1020" y="80" width="148" height="40" rx="6" fill="#2F8CFF"/>
+  <text x="1042" y="105" font-size="14" font-weight="600" fill="#FFFFFF">+ 새 할일 등록</text>
+
+  <!-- 상태 필터 칩 -->
+  <g font-size="13" font-weight="600">
+    <rect x="248" y="128" width="60" height="32" rx="16" fill="#2F8CFF"/>
+    <text x="264" y="149" fill="#FFFFFF">전체</text>
+
+    <rect x="316" y="128" width="72" height="32" rx="16" fill="#FFFFFF" stroke="#E4E8F1"/>
+    <text x="332" y="149" fill="#5B667A">시작전</text>
+
+    <rect x="396" y="128" width="72" height="32" rx="16" fill="#FFFFFF" stroke="#E4E8F1"/>
+    <text x="410" y="149" fill="#5B667A">진행중</text>
+
+    <rect x="476" y="128" width="60" height="32" rx="16" fill="#FFFFFF" stroke="#E4E8F1"/>
+    <text x="490" y="149" fill="#5B667A">완료</text>
+
+    <rect x="544" y="128" width="60" height="32" rx="16" fill="#FFFFFF" stroke="#E4E8F1"/>
+    <text x="558" y="149" fill="#5B667A">지연</text>
+  </g>
+
+  <!-- Todo 카드 목록 (style §4 카드 규칙 적용, 라이트 배경 톤) -->
+  <!-- 카드 1: 진행중 -->
+  <rect x="248" y="176" width="920" height="88" rx="12" fill="#FFFFFF" stroke="#E4E8F1"/>
+  <rect x="272" y="200" width="64" height="24" rx="12" fill="#2F8CFF"/>
+  <text x="286" y="217" font-size="12" font-weight="700" fill="#FFFFFF">진행중</text>
+  <text x="352" y="218" font-size="16" font-weight="700" fill="#0B1D4D">기획서 작성</text>
+  <text x="272" y="244" font-size="13" fill="#8792A6">업무 · 08/20 ~ 08/28</text>
+  <rect x="1032" y="204" width="56" height="32" rx="6" fill="#FFFFFF" stroke="#2F8CFF"/>
+  <text x="1046" y="225" font-size="13" font-weight="600" fill="#2F8CFF">수정</text>
+  <rect x="1096" y="204" width="56" height="32" rx="6" fill="#FFFFFF" stroke="#E5484D"/>
+  <text x="1110" y="225" font-size="13" font-weight="600" fill="#E5484D">삭제</text>
+
+  <!-- 카드 2: 지연 -->
+  <rect x="248" y="280" width="920" height="88" rx="12" fill="#FFFFFF" stroke="#E4E8F1"/>
+  <rect x="272" y="304" width="52" height="24" rx="12" fill="#E5484D"/>
+  <text x="286" y="321" font-size="12" font-weight="700" fill="#FFFFFF">지연</text>
+  <text x="340" y="322" font-size="16" font-weight="700" fill="#0B1D4D">장보기</text>
+  <text x="272" y="348" font-size="13" fill="#8792A6">기본 · 08/10 ~ 08/20</text>
+  <rect x="1032" y="308" width="56" height="32" rx="6" fill="#FFFFFF" stroke="#2F8CFF"/>
+  <text x="1046" y="329" font-size="13" font-weight="600" fill="#2F8CFF">수정</text>
+  <rect x="1096" y="308" width="56" height="32" rx="6" fill="#FFFFFF" stroke="#E5484D"/>
+  <text x="1110" y="329" font-size="13" font-weight="600" fill="#E5484D">삭제</text>
+
+  <!-- 카드 3: 완료 -->
+  <rect x="248" y="384" width="920" height="88" rx="12" fill="#FFFFFF" stroke="#E4E8F1"/>
+  <rect x="272" y="408" width="52" height="24" rx="12" fill="#2FBF71"/>
+  <text x="286" y="425" font-size="12" font-weight="700" fill="#FFFFFF">완료</text>
+  <text x="340" y="426" font-size="16" font-weight="700" fill="#0B1D4D">운동하기 ✓</text>
+  <text x="272" y="452" font-size="13" fill="#8792A6">개인 · 08/15 ~ 08/20</text>
+  <rect x="1032" y="412" width="56" height="32" rx="6" fill="#FFFFFF" stroke="#2F8CFF"/>
+  <text x="1046" y="433" font-size="13" font-weight="600" fill="#2F8CFF">수정</text>
+  <rect x="1096" y="412" width="56" height="32" rx="6" fill="#FFFFFF" stroke="#E5484D"/>
+  <text x="1110" y="433" font-size="13" font-weight="600" fill="#E5484D">삭제</text>
+
+  <!-- 카드 4: 시작전 -->
+  <rect x="248" y="488" width="920" height="88" rx="12" fill="#FFFFFF" stroke="#E4E8F1"/>
+  <rect x="272" y="512" width="60" height="24" rx="12" fill="#D9DEE9"/>
+  <text x="286" y="529" font-size="12" font-weight="700" fill="#5B667A">시작전</text>
+  <text x="348" y="530" font-size="16" font-weight="700" fill="#0B1D4D">여행 준비</text>
+  <text x="272" y="556" font-size="13" fill="#8792A6">개인 · 09/01 ~ 09/10</text>
+  <rect x="1032" y="516" width="56" height="32" rx="6" fill="#FFFFFF" stroke="#2F8CFF"/>
+  <text x="1046" y="537" font-size="13" font-weight="600" fill="#2F8CFF">수정</text>
+  <rect x="1096" y="516" width="56" height="32" rx="6" fill="#FFFFFF" stroke="#E5484D"/>
+  <text x="1110" y="537" font-size="13" font-weight="600" fill="#E5484D">삭제</text>
+</svg>

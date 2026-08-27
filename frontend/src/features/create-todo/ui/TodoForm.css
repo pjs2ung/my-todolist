@@ -1,0 +1,94 @@
+.todo-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  font-family: -apple-system, 'Segoe UI', 'Malgun Gothic', sans-serif;
+}
+
+.todo-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.todo-form-field label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0b1d4d;
+}
+
+.todo-form-field input[type='text'],
+.todo-form-field select {
+  border: 1px solid #d6deef;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 15px;
+  color: #0b1d4d;
+  outline: none;
+}
+
+.todo-form-field input[type='text']:focus,
+.todo-form-field select:focus {
+  border-color: #2f8cff;
+}
+
+.todo-form-hint {
+  font-size: 13px;
+  color: #5b667a;
+  margin: 0;
+}
+
+.todo-form-field-error {
+  font-size: 13px;
+  color: #e5484d;
+  margin: 0;
+}
+
+.todo-form-error {
+  font-size: 14px;
+  color: #e5484d;
+  margin: 0;
+}
+
+.todo-form-row {
+  display: flex;
+  gap: 16px;
+}
+
+.todo-form-row .todo-form-field {
+  flex: 1;
+}
+
+.todo-form-checkbox label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 400;
+}
+
+.todo-form-submit-button {
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  background-color: #2f8cff;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.todo-form-submit-button:hover:not(:disabled) {
+  background-color: #1e6fd9;
+}
+
+.todo-form-submit-button:disabled {
+  background-color: #d6deef;
+  color: #999999;
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .todo-form-row {
+    flex-direction: column;
+  }
+}
