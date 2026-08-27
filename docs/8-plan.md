@@ -8,6 +8,15 @@
 | 0.2.0 | 2026-08-26 | DB-01 완료 처리(전용 DB `todolist`/계정 `todolist_app` 생성, `DATABASE_URL` 확정) | Task 수행 완료 |
 | 0.3.0 | 2026-08-26 | DB-02(`todolist` DB에 schema.sql 적용), DB-03(`backend/src/db/pool.js` 작성 및 연결/에러 검증) 완료 처리 | Task 수행 완료 |
 | 0.4.0 | 2026-08-26 | BE-01 완료 처리(Express app/server/errorHandler/CORS/health, Jest+supertest 테스트 10건 전부 통과, 커버리지 100%) | Task 수행 완료 |
+| 0.5.0 | 2026-08-27 | BE-02 완료 처리(`utils/jwt.js`, `utils/password.js` — access/refresh 시크릿 분리, bcrypt 해시/비교, 실패 시 콘솔 로깅, 테스트 12건 전부 통과, 커버리지 96~100%) | Task 수행 완료 |
+| 0.6.0 | 2026-08-27 | BE-03 완료 처리(회원가입/로그인/refresh/logout API, `users.refresh_token_hash` 컬럼 추가로 로그아웃 무효화 구현, 테스트 10건 전부 통과, 커버리지 90~100%) | Task 수행 완료 |
+| 0.7.0 | 2026-08-27 | BE-04 완료 처리(`auth.middleware.js` — Bearer 토큰 검증, req.userId 주입, 테스트 6건 전부 통과, 커버리지 100%) | Task 수행 완료 |
+| 0.8.0 | 2026-08-27 | BE-05 완료 처리(`GET/PATCH /api/users/me`, auth.middleware 최초 적용, 테스트 6건 전부 통과, 커버리지 90~100%) | Task 수행 완료 |
+| 0.9.0 | 2026-08-27 | BE-06 완료 처리(카테고리 CRUD, '기본' 카테고리 삭제 금지 및 Todo 재배정 트랜잭션, `insertCategory`를 `category.query.js`로 이전, 테스트 13건 전부 통과, 커버리지 90~100%) | Task 수행 완료 |
+| 1.0.0 | 2026-08-27 | BE-07 완료 처리(Todo 등록/수정/삭제 API, BR-03/04/05/06 검증, DATE 컬럼 타임존 직렬화 버그 수정(`::text` 캐스팅), 테스트 20여건 전부 통과, 커버리지 90~100%) | Task 수행 완료 |
+| 1.1.0 | 2026-08-27 | BE-08 완료 처리(`GET /api/todos` 목록/필터링, `todoStatus.js` 상태 파생 로직(§5, 경계값 포함), 테스트 20여건 전부 통과, 커버리지 90~100%) | Task 수행 완료 |
+| 1.2.0 | 2026-08-27 | BE-09 완료 처리(§4 자동화 대상 3종 — todoStatus/dateRange/defaultCategory, `todos.service.js`에서 `isValidDateRange`/`resolveCategoryId` 순수 리팩터링 후 export, 신규 테스트 8건 포함 전체 14스위트 107건 통과) | Task 수행 완료 |
+| 1.3.0 | 2026-08-27 | BE-10 완료 처리(수동 검증 스크립트 작성/실행, SC-01~07 전체 + BR-01/BR-06 교차 확인) | Task 수행 완료 |
 
 ## 목차
 
@@ -77,9 +86,9 @@
 
 - **수행 작업**: `jwt.js`(access token 15분, refresh token 7일 발급/검증, access/refresh 시크릿 분리), `password.js`(bcrypt 해시/검증).
 - **완료 조건**
-  - [ ] access token 발급 후 만료(15분) 검증 함수가 만료 전/후를 정확히 구분
-  - [ ] refresh token 발급/검증 함수가 access와 별도 시크릿을 사용함을 코드로 확인
-  - [ ] bcrypt 해시 생성 후 원문 비교(`compare`)가 정상 동작
+  - [x] access token 발급 후 만료(15분) 검증 함수가 만료 전/후를 정확히 구분
+  - [x] refresh token 발급/검증 함수가 access와 별도 시크릿을 사용함을 코드로 확인
+  - [x] bcrypt 해시 생성 후 원문 비교(`compare`)가 정상 동작
 - **선행 Task**: BE-01
 
 ### BE-03. 인증 API — 회원가입/로그인/토큰 재발급/로그아웃
@@ -90,87 +99,87 @@
   - `/api/auth/refresh`: refresh token 검증 후 access token 재발급.
   - `/api/auth/logout`: refresh token 무효화.
 - **완료 조건**
-  - [ ] `POST /api/auth/register` 성공 시 201, User·'기본' Category가 함께 생성됨(DB 확인)
-  - [ ] 중복 email로 가입 시 거부 응답(BR-02, SC-01 E1)
-  - [ ] `POST /api/auth/login` 성공 시 access token(body) + refresh token(HttpOnly 쿠키) 응답
-  - [ ] 잘못된 email/password 시 401 + 동일 에러 메시지(SC-02 E1/E3)
-  - [ ] `POST /api/auth/refresh` 정상 refresh token으로 새 access token 발급 확인
-  - [ ] 만료/무효 refresh token으로 401 확인(SC-02 E2)
-  - [ ] `POST /api/auth/logout` 후 해당 refresh token 재사용 시 거부됨
+  - [x] `POST /api/auth/register` 성공 시 201, User·'기본' Category가 함께 생성됨(DB 확인)
+  - [x] 중복 email로 가입 시 거부 응답(BR-02, SC-01 E1)
+  - [x] `POST /api/auth/login` 성공 시 access token(body) + refresh token(HttpOnly 쿠키) 응답
+  - [x] 잘못된 email/password 시 401 + 동일 에러 메시지(SC-02 E1/E3)
+  - [x] `POST /api/auth/refresh` 정상 refresh token으로 새 access token 발급 확인
+  - [x] 만료/무효 refresh token으로 401 확인(SC-02 E2)
+  - [x] `POST /api/auth/logout` 후 해당 refresh token 재사용 시 거부됨
 - **선행 Task**: BE-02, DB-02
 
 ### BE-04. 인증 미들웨어
 
 - **수행 작업**: `auth.middleware.js` — access token 검증, 미인증/만료 시 401(BR-01), 검증 성공 시 `req.userId` 주입.
 - **완료 조건**
-  - [ ] Authorization 헤더 없이 보호 API 호출 시 401
-  - [ ] 만료된 access token으로 호출 시 401
-  - [ ] 유효한 access token으로 호출 시 `req.userId`가 올바르게 채워짐(로그 또는 테스트로 확인)
+  - [x] Authorization 헤더 없이 보호 API 호출 시 401
+  - [x] 만료된 access token으로 호출 시 401
+  - [x] 유효한 access token으로 호출 시 `req.userId`가 올바르게 채워짐(로그 또는 테스트로 확인)
 - **선행 Task**: BE-02
 
 ### BE-05. 회원정보 API
 
 - **수행 작업**: `users.query.js`, `users.service.js`, `users.controller.js`, `users.route.js` — `GET/PATCH /api/users/me`(FR-03), 본인만 수정 가능(BR-07), name 1~50자 검증.
 - **완료 조건**
-  - [ ] `GET /api/users/me` 호출 시 본인 정보 반환(password/해시 미포함)
-  - [ ] `PATCH /api/users/me`로 name 수정 성공 및 `updatedAt` 갱신 확인
-  - [ ] name 형식 위반(빈 값/51자 이상) 시 400(SC-03 E2)
-  - [ ] 미인증 호출 시 401
+  - [x] `GET /api/users/me` 호출 시 본인 정보 반환(password/해시 미포함)
+  - [x] `PATCH /api/users/me`로 name 수정 성공 및 `updatedAt` 갱신 확인
+  - [x] name 형식 위반(빈 값/51자 이상) 시 400(SC-03 E2)
+  - [x] 미인증 호출 시 401
 - **선행 Task**: BE-04
 
 ### BE-06. 카테고리 API
 
 - **수행 작업**: `category.query.js`, `categories.service.js`, `categories.controller.js`, `categories.route.js` — `GET/POST /api/categories`, `DELETE /api/categories/:id`. '기본' 카테고리 삭제 금지(BR-08), 삭제 시 소속 Todo '기본' 카테고리로 재배정하는 트랜잭션 처리.
 - **완료 조건**
-  - [ ] `GET /api/categories` 호출 시 본인 카테고리만 반환(BR-06)
-  - [ ] `POST /api/categories`로 카테고리 생성 성공, 동일 이름 중복 생성 시 거부
-  - [ ] '기본' 카테고리 삭제 시도 시 거부 응답(BR-08)
-  - [ ] '기본' 아닌 카테고리 삭제 시 소속 Todo의 `category_id`가 '기본' 카테고리로 재배정됨을 DB로 확인
-  - [ ] 타인 소유 카테고리 삭제 시도 시 403(BR-06)
+  - [x] `GET /api/categories` 호출 시 본인 카테고리만 반환(BR-06)
+  - [x] `POST /api/categories`로 카테고리 생성 성공, 동일 이름 중복 생성 시 거부
+  - [x] '기본' 카테고리 삭제 시도 시 거부 응답(BR-08)
+  - [x] '기본' 아닌 카테고리 삭제 시 소속 Todo의 `category_id`가 '기본' 카테고리로 재배정됨을 DB로 확인
+  - [x] 타인 소유 카테고리 삭제 시도 시 403(BR-06)
 - **선행 Task**: BE-04, BE-03(기본 카테고리 생성 로직 재사용)
 
 ### BE-07. Todo 등록/수정/삭제 API
 
 - **수행 작업**: `todo.query.js`, `todos.service.js`(일부), `todos.controller.js`, `todos.route.js` — `POST/PATCH/DELETE /api/todos`. 카테고리 미지정 시 '기본' 자동 적용(BR-03), categoryId 소유권/존재 검증(BR-04), `startDate<=endDate` 검증(BR-05), 소유권 검증(BR-06).
 - **완료 조건**
-  - [ ] `POST /api/todos` 카테고리 지정 등록 성공(FR-04)
-  - [ ] 카테고리 미지정 등록 시 '기본' 카테고리로 자동 저장됨(BR-03, SC-04 대안흐름)
-  - [ ] `startDate > endDate` 등록 시도 시 거부(BR-05, SC-04 E1)
-  - [ ] 존재하지 않거나 타인 소유 categoryId 사용 시 거부(BR-04, SC-04 E2)
-  - [ ] `PATCH /api/todos/:id` 정상 수정 및 `updatedAt` 갱신 확인
-  - [ ] 타인 소유 Todo 수정/삭제 시도 시 403(BR-06, SC-06 E1/SC-07 E1)
-  - [ ] 존재하지 않는 Todo id 조작 시 404(SC-06 E2/SC-07 E2)
-  - [ ] `DELETE /api/todos/:id` 성공 시 실제 레코드 삭제 확인
+  - [x] `POST /api/todos` 카테고리 지정 등록 성공(FR-04)
+  - [x] 카테고리 미지정 등록 시 '기본' 카테고리로 자동 저장됨(BR-03, SC-04 대안흐름)
+  - [x] `startDate > endDate` 등록 시도 시 거부(BR-05, SC-04 E1)
+  - [x] 존재하지 않거나 타인 소유 categoryId 사용 시 거부(BR-04, SC-04 E2)
+  - [x] `PATCH /api/todos/:id` 정상 수정 및 `updatedAt` 갱신 확인
+  - [x] 타인 소유 Todo 수정/삭제 시도 시 403(BR-06, SC-06 E1/SC-07 E1)
+  - [x] 존재하지 않는 Todo id 조작 시 404(SC-06 E2/SC-07 E2)
+  - [x] `DELETE /api/todos/:id` 성공 시 실제 레코드 삭제 확인
 - **선행 Task**: BE-06
 
 ### BE-08. Todo 목록 조회/필터링 API + 상태 파생 로직
 
 - **수행 작업**: `GET /api/todos?categoryId=&status=`(FR-06), `todoStatus.js` 상태 파생 함수(§5: 완료→시작전→진행중→지연, 경계값 `startDate==오늘`/`endDate==오늘`은 진행중) 작성 및 목록 API에 적용.
 - **완료 조건**
-  - [ ] 필터 없이 호출 시 본인 소유 Todo 전체 반환(BR-06)
-  - [ ] `categoryId` 필터 적용 시 해당 카테고리 Todo만 반환
-  - [ ] `status=not_started|in_progress|done|overdue` 4종 각각 §5 규칙대로 정확히 필터링됨(경계값 케이스 포함 수동 확인)
-  - [ ] Todo 0건/필터 결과 0건일 때 빈 배열 정상 반환(에러 아님, SC-05 E1)
+  - [x] 필터 없이 호출 시 본인 소유 Todo 전체 반환(BR-06)
+  - [x] `categoryId` 필터 적용 시 해당 카테고리 Todo만 반환
+  - [x] `status=not_started|in_progress|done|overdue` 4종 각각 §5 규칙대로 정확히 필터링됨(경계값 케이스 포함 수동 확인)
+  - [x] Todo 0건/필터 결과 0건일 때 빈 배열 정상 반환(에러 아님, SC-05 E1)
 - **선행 Task**: BE-07
 
 ### BE-09. 단위 테스트 (자동화 최소 범위)
 
 - **수행 작업**: `docs/5-project-principle.md` §4 자동화 대상 3종 테스트 작성 — `todoStatus.test.js`, `dateRange.test.js`(BR-05), `defaultCategory.test.js`(BR-03).
 - **완료 조건**
-  - [ ] `todoStatus` 함수가 4개 상태 + 경계값(시작일=오늘, 종료일=오늘) 케이스에서 모두 통과
-  - [ ] `startDate <= endDate` 검증 함수가 정상/위반 케이스 모두 통과
-  - [ ] '기본' 카테고리 자동 적용 로직이 미지정/지정 케이스 모두 통과
-  - [ ] `npm test` 실행 시 3개 테스트 파일 전부 성공
+  - [x] `todoStatus` 함수가 4개 상태 + 경계값(시작일=오늘, 종료일=오늘) 케이스에서 모두 통과
+  - [x] `startDate <= endDate` 검증 함수가 정상/위반 케이스 모두 통과
+  - [x] '기본' 카테고리 자동 적용 로직이 미지정/지정 케이스 모두 통과
+  - [x] `npm test` 실행 시 3개 테스트 파일 전부 성공
 - **선행 Task**: BE-07, BE-08
 
 ### BE-10. 백엔드 수동 검증
 
 - **수행 작업**: `docs/3-user-scenario.md` SC-01~SC-07 기본/예외 흐름을 Postman/curl로 1회씩 재현. BR-01(미인증 401), BR-06(타인 리소스 403)은 정상 사용자·타 사용자 토큰을 교차 호출해 확인.
 - **완료 조건**
-  - [ ] SC-01~SC-07 기본 흐름 전부 기대 응답과 일치
-  - [ ] SC-01~SC-07의 예외 흐름(E1, E2 …) 전부 기대 상태코드/메시지와 일치
-  - [ ] 미인증 상태로 보호 API 호출 시 전부 401
-  - [ ] 타 사용자 토큰으로 다른 사용자의 Todo/Category 접근 시 전부 403
+  - [x] SC-01~SC-07 기본 흐름 전부 기대 응답과 일치
+  - [x] SC-01~SC-07의 예외 흐름(E1, E2 …) 전부 기대 상태코드/메시지와 일치
+  - [x] 미인증 상태로 보호 API 호출 시 전부 401
+  - [x] 타 사용자 토큰으로 다른 사용자의 Todo/Category 접근 시 전부 403
 - **선행 Task**: BE-03, BE-05, BE-06, BE-07, BE-08
 
 ### BE-11. 배포 준비

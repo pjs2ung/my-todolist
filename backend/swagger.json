@@ -222,7 +222,7 @@
         "properties": {
           "code": {
             "type": "string",
-            "description": "에러 코드 (예: VALIDATION_ERROR, UNAUTHORIZED, FORBIDDEN, NOT_FOUND, EMAIL_TAKEN, INVALID_DATE_RANGE, INVALID_CATEGORY, DEFAULT_CATEGORY_DELETE_FORBIDDEN)"
+            "description": "에러 코드 (예: VALIDATION_ERROR, UNAUTHORIZED, FORBIDDEN, NOT_FOUND, EMAIL_TAKEN, INVALID_DATE_RANGE, INVALID_CATEGORY, DEFAULT_CATEGORY_DELETE_FORBIDDEN, CATEGORY_NAME_TAKEN)"
           },
           "message": {
             "type": "string",

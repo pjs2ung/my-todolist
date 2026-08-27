@@ -1,17 +1,21 @@
-const express = require('express');
-const cors = require('cors');
-const morgan = require('morgan');
+const express = require("express");
+const cors = require("cors");
+const morgan = require("morgan");
 
-const pool = require('./db/pool');
-const errorHandler = require('./middlewares/errorHandler');
+const pool = require("./db/pool");
+const errorHandler = require("./middlewares/errorHandler");
+const authRoute = require("./routes/auth.route");
+const usersRoute = require("./routes/users.route");
+const categoriesRoute = require("./routes/categories.route");
+const todosRoute = require("./routes/todos.route");
 
 const app = express();
 
 app.use(express.json());
-app.use(morgan('dev'));
+app.use(morgan("dev"));
 
-const allowlist = (process.env.CORS_ORIGIN || '')
-  .split(',')
+const allowlist = (process.env.CORS_ORIGIN || "")
+  .split(",")
   .map((origin) => origin.trim())
   .filter(Boolean);
 
@@ -22,26 +26,31 @@ app.use(
         return callback(null, true);
       }
       return callback(
-        Object.assign(new Error('Not allowed by CORS'), {
+        Object.assign(new Error("Not allowed by CORS"), {
           status: 403,
-          code: 'CORS_NOT_ALLOWED',
-        })
+          code: "CORS_NOT_ALLOWED",
+        }),
       );
     },
     credentials: true,
-  })
+  }),
 );
 
-app.get('/health', async (req, res, next) => {
+app.get("/health", async (req, res, next) => {
   try {
-    await pool.query('SELECT 1');
-    res.status(200).json({ status: 'ok', db: 'connected' });
+    await pool.query("SELECT 1");
+    res.status(200).json({ status: "ok", db: "connected" });
   } catch (err) {
     err.status = 500;
-    err.code = 'DB_UNAVAILABLE';
+    err.code = "DB_UNAVAILABLE";
     next(err);
   }
 });
+
+app.use("/api/auth", authRoute);
+app.use("/api/users", usersRoute);
+app.use("/api/categories", categoriesRoute);
+app.use("/api/todos", todosRoute);
 
 app.use(errorHandler);
 

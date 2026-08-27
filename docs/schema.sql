@@ -9,6 +9,7 @@ CREATE TABLE users (
     id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email         VARCHAR(255) NOT NULL UNIQUE,
     password_hash TEXT NOT NULL,                         -- 평문 저장 금지 (§3.1)
+    refresh_token_hash TEXT,                             -- 로그인 시 발급 refresh token의 sha256 해시. NULL=로그아웃 상태(단일 세션 가정, BE-03)
     name          VARCHAR(50) NOT NULL CHECK (char_length(name) BETWEEN 1 AND 50),
     created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at    TIMESTAMPTZ NOT NULL DEFAULT now()
