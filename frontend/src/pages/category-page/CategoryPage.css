@@ -1,0 +1,136 @@
+.category-page {
+  max-width: 480px;
+  margin: 40px auto;
+  padding: 24px;
+  font-family: -apple-system, 'Segoe UI', 'Malgun Gothic', sans-serif;
+}
+
+.category-page-back-link {
+  display: inline-block;
+  margin-bottom: 12px;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.category-page-back-link:hover {
+  color: #2f8cff;
+}
+
+.category-page-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text-strong);
+  margin: 0 0 20px;
+}
+
+.category-create-form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.category-create-form input,
+.category-edit-form input {
+  flex: 1;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 15px;
+  color: var(--color-text-strong);
+  background-color: var(--color-surface);
+}
+
+.category-create-form input:focus,
+.category-edit-form input:focus {
+  outline: none;
+  border-color: #2f8cff;
+}
+
+.category-primary-button {
+  border: none;
+  border-radius: 6px;
+  padding: 10px 16px;
+  background-color: #2f8cff;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.category-primary-button:hover {
+  background-color: #1e6fd9;
+}
+
+.category-outline-button {
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 10px 16px;
+  background-color: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.category-outline-button:hover {
+  background-color: var(--color-surface-alt);
+}
+
+.category-delete-button {
+  border: 1px solid #e5484d;
+  border-radius: 6px;
+  padding: 10px 16px;
+  background-color: var(--color-surface);
+  color: #e5484d;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.category-delete-button:hover {
+  background-color: rgba(229, 72, 77, 0.1);
+}
+
+.category-page-error {
+  color: #e5484d;
+  font-size: 14px;
+  margin: 4px 0 16px;
+}
+
+.category-list {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.category-list-item {
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.category-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-strong);
+}
+
+.category-item-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.category-edit-form {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}

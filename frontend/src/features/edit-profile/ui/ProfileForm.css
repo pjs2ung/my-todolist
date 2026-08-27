@@ -14,15 +14,16 @@
 .auth-field label {
   font-size: 14px;
   font-weight: 600;
-  color: #0b1d4d;
+  color: var(--color-text-strong);
 }
 
 .auth-field input {
-  border: 1px solid #d6deef;
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   padding: 10px 12px;
   font-size: 15px;
-  color: #0b1d4d;
+  color: var(--color-text-strong);
+  background-color: var(--color-surface);
   outline: none;
 }
 
@@ -31,8 +32,8 @@
 }
 
 .auth-field input:read-only {
-  background-color: #f2f5fb;
-  color: #6b7893;
+  background-color: var(--color-surface-alt);
+  color: var(--color-text-muted);
 }
 
 .auth-field-error {
@@ -57,7 +58,7 @@
 }
 
 .auth-submit-button:disabled {
-  background-color: #d6deef;
+  background-color: var(--color-border);
   color: #999999;
   cursor: not-allowed;
 }

@@ -119,6 +119,96 @@ describe('Categories API (BE-06)', () => {
     });
   });
 
+  describe('PATCH /api/categories/:id', () => {
+    let patchCategoryId;
+
+    beforeAll(async () => {
+      const createRes = await request(app)
+        .post('/api/categories')
+        .set('Authorization', `Bearer ${accessTokenA}`)
+        .send({ name: `PATCH전용-${Date.now()}` });
+      patchCategoryId = createRes.body.id;
+    });
+
+    test('인증 헤더 없으면 401', async () => {
+      const res = await request(app)
+        .patch('/api/categories/00000000-0000-0000-0000-000000000000')
+        .send({ name: '변경' });
+      expect(res.status).toBe(401);
+    });
+
+    test('name이 빈 문자열이면 400과 VALIDATION_ERROR', async () => {
+      const res = await request(app)
+        .patch(`/api/categories/${patchCategoryId}`)
+        .set('Authorization', `Bearer ${accessTokenA}`)
+        .send({ name: '' });
+
+      expect(res.status).toBe(400);
+      expect(res.body.code).toBe('VALIDATION_ERROR');
+    });
+
+    test('존재하지 않는 id면 404', async () => {
+      const res = await request(app)
+        .patch('/api/categories/00000000-0000-0000-0000-000000000000')
+        .set('Authorization', `Bearer ${accessTokenA}`)
+        .send({ name: '변경' });
+      expect(res.status).toBe(404);
+    });
+
+    test('기본 카테고리 이름 변경 시도 시 400과 DEFAULT_CATEGORY_RENAME_FORBIDDEN', async () => {
+      const listRes = await request(app)
+        .get('/api/categories')
+        .set('Authorization', `Bearer ${accessTokenA}`);
+      const defaultCategory = listRes.body.find((c) => c.name === '기본');
+
+      const res = await request(app)
+        .patch(`/api/categories/${defaultCategory.id}`)
+        .set('Authorization', `Bearer ${accessTokenA}`)
+        .send({ name: '변경시도' });
+
+      expect(res.status).toBe(400);
+      expect(res.body.code).toBe('DEFAULT_CATEGORY_RENAME_FORBIDDEN');
+    });
+
+    test('타인 소유 카테고리 수정 시도 시 403과 FORBIDDEN', async () => {
+      const res = await request(app)
+        .patch(`/api/categories/${patchCategoryId}`)
+        .set('Authorization', `Bearer ${accessTokenB}`)
+        .send({ name: '변경시도' });
+
+      expect(res.status).toBe(403);
+      expect(res.body.code).toBe('FORBIDDEN');
+    });
+
+    test('정상 수정 시 200과 변경된 이름', async () => {
+      const newName = `PATCH전용-변경-${Date.now()}`;
+
+      const res = await request(app)
+        .patch(`/api/categories/${patchCategoryId}`)
+        .set('Authorization', `Bearer ${accessTokenA}`)
+        .send({ name: newName });
+
+      expect(res.status).toBe(200);
+      expect(res.body.name).toBe(newName);
+      expect(res.body.id).toBe(patchCategoryId);
+    });
+
+    test('중복 name으로 변경 시 400과 CATEGORY_NAME_TAKEN', async () => {
+      const listRes = await request(app)
+        .get('/api/categories')
+        .set('Authorization', `Bearer ${accessTokenA}`);
+      const defaultCategory = listRes.body.find((c) => c.name === '기본');
+
+      const res = await request(app)
+        .patch(`/api/categories/${patchCategoryId}`)
+        .set('Authorization', `Bearer ${accessTokenA}`)
+        .send({ name: defaultCategory.name });
+
+      expect(res.status).toBe(400);
+      expect(res.body.code).toBe('CATEGORY_NAME_TAKEN');
+    });
+  });
+
   describe('DELETE /api/categories/:id', () => {
     test('인증 헤더 없으면 401', async () => {
       const res = await request(app).delete(

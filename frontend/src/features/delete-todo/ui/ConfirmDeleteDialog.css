@@ -9,7 +9,7 @@
 }
 
 .confirm-delete-dialog {
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border-radius: 12px;
   padding: 24px;
   width: 320px;
@@ -20,21 +20,21 @@
 .confirm-delete-dialog-title {
   font-size: 18px;
   font-weight: 700;
-  color: #0b1d4d;
+  color: var(--color-text-strong);
   margin: 0 0 12px;
 }
 
 .confirm-delete-dialog-todo-title {
   font-size: 15px;
   font-weight: 600;
-  color: #0b1d4d;
+  color: var(--color-text-strong);
   margin: 0 0 8px;
   word-break: break-all;
 }
 
 .confirm-delete-dialog-desc {
   font-size: 14px;
-  color: #5b667a;
+  color: var(--color-text-muted);
   margin: 0 0 20px;
 }
 
@@ -45,11 +45,11 @@
 }
 
 .confirm-delete-dialog-cancel-button {
-  border: 1px solid #0b1d4d;
+  border: 1px solid var(--color-text-strong);
   border-radius: 6px;
   padding: 10px 20px;
   background-color: transparent;
-  color: #0b1d4d;
+  color: var(--color-text-strong);
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;

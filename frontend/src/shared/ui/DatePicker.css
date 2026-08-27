@@ -1,10 +1,11 @@
 .shared-date-picker {
-  border: 1px solid #d6deef;
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   padding: 10px 12px;
   font-size: 15px;
   font-family: -apple-system, 'Segoe UI', 'Malgun Gothic', sans-serif;
-  color: #0b1d4d;
+  color: var(--color-text-strong);
+  background-color: var(--color-surface);
   outline: none;
 }
 

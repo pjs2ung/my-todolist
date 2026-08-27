@@ -28,6 +28,21 @@ async function createCategory(req, res, next) {
   }
 }
 
+async function updateCategory(req, res, next) {
+  try {
+    const { name } = req.body || {};
+
+    if (typeof name !== 'string' || name.length < 1 || name.length > 30) {
+      throw validationError('카테고리 이름은 1~30자여야 합니다.');
+    }
+
+    const category = await categoriesService.updateCategory(req.userId, req.params.id, name);
+    res.status(200).json(category);
+  } catch (err) {
+    next(err);
+  }
+}
+
 async function deleteCategory(req, res, next) {
   try {
     await categoriesService.deleteCategory(req.userId, req.params.id);
@@ -37,4 +52,6 @@ async function deleteCategory(req, res, next) {
   }
 }
 
-module.exports = { getCategories, createCategory, deleteCategory };
+module.exports = {
+  getCategories, createCategory, updateCategory, deleteCategory,
+};

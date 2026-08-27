@@ -2,13 +2,16 @@ import { useState } from 'react'
 import './RegisterForm.css'
 import { useRegister } from '../model/useRegister'
 import { mapRegisterFieldError } from '../model/registerFieldError'
+import { useLocaleStore, useT } from '../../../shared/lib/localeStore'
 
 export function RegisterForm() {
+  const t = useT()
+  const locale = useLocaleStore((s) => s.locale)
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
   const [password, setPassword] = useState('')
   const mutation = useRegister()
-  const fieldErrors = mapRegisterFieldError(mutation.error ?? null)
+  const fieldErrors = mapRegisterFieldError(mutation.error ?? null, locale)
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -18,7 +21,7 @@ export function RegisterForm() {
   return (
     <form className="auth-form" onSubmit={handleSubmit}>
       <div className="auth-field">
-        <label htmlFor="register-email">이메일</label>
+        <label htmlFor="register-email">{t.field_email}</label>
         <input
           id="register-email"
           type="email"
@@ -29,7 +32,7 @@ export function RegisterForm() {
         {fieldErrors.email && <p className="auth-field-error">{fieldErrors.email}</p>}
       </div>
       <div className="auth-field">
-        <label htmlFor="register-name">이름</label>
+        <label htmlFor="register-name">{t.field_name}</label>
         <input
           id="register-name"
           type="text"
@@ -40,7 +43,7 @@ export function RegisterForm() {
         {fieldErrors.name && <p className="auth-field-error">{fieldErrors.name}</p>}
       </div>
       <div className="auth-field">
-        <label htmlFor="register-password">비밀번호</label>
+        <label htmlFor="register-password">{t.field_password}</label>
         <input
           id="register-password"
           type="password"
@@ -52,7 +55,7 @@ export function RegisterForm() {
       </div>
       {fieldErrors.form && <p className="auth-form-error">{fieldErrors.form}</p>}
       <button type="submit" className="auth-submit-button" disabled={mutation.isPending}>
-        가입하기
+        {t.register_submit}
       </button>
     </form>
   )

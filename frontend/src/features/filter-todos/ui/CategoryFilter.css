@@ -15,12 +15,12 @@
   border-radius: 6px;
   padding: 10px 12px;
   font-size: 15px;
-  color: #0b1d4d;
+  color: var(--color-text-strong);
   cursor: pointer;
 }
 
 .category-sidebar-item:hover {
-  background-color: #f2f5fb;
+  background-color: var(--color-surface-alt);
 }
 
 .category-sidebar-item--active {
@@ -31,11 +31,12 @@
 .category-dropdown {
   display: none;
   width: 100%;
-  border: 1px solid #d6deef;
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   padding: 10px 12px;
   font-size: 15px;
-  color: #0b1d4d;
+  color: var(--color-text-strong);
+  background-color: var(--color-surface);
 }
 
 @media (max-width: 1024.1px) {

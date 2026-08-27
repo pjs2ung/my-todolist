@@ -1,4 +1,5 @@
 import './ConfirmDeleteDialog.css'
+import { useT } from '../../../shared/lib/localeStore'
 
 export type ConfirmDeleteDialogProps = {
   todoTitle: string
@@ -8,6 +9,7 @@ export type ConfirmDeleteDialogProps = {
 }
 
 export function ConfirmDeleteDialog({ todoTitle, onConfirm, onCancel, isPending }: ConfirmDeleteDialogProps) {
+  const t = useT()
   return (
     <div className="confirm-delete-dialog-overlay" role="presentation" onClick={onCancel}>
       <div
@@ -18,13 +20,13 @@ export function ConfirmDeleteDialog({ todoTitle, onConfirm, onCancel, isPending 
         onClick={(e) => e.stopPropagation()}
       >
         <h2 id="confirm-delete-dialog-title" className="confirm-delete-dialog-title">
-          할일을 삭제할까요?
+          {t.confirm_delete_title}
         </h2>
         <p className="confirm-delete-dialog-todo-title">"{todoTitle}"</p>
-        <p className="confirm-delete-dialog-desc">삭제 후에는 되돌릴 수 없습니다.</p>
+        <p className="confirm-delete-dialog-desc">{t.confirm_delete_desc}</p>
         <div className="confirm-delete-dialog-actions">
           <button type="button" className="confirm-delete-dialog-cancel-button" onClick={onCancel}>
-            취소
+            {t.cancel}
           </button>
           <button
             type="button"
@@ -32,7 +34,7 @@ export function ConfirmDeleteDialog({ todoTitle, onConfirm, onCancel, isPending 
             onClick={onConfirm}
             disabled={isPending}
           >
-            삭제
+            {t.delete}
           </button>
         </div>
       </div>

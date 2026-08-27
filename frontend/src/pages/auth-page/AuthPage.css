@@ -8,7 +8,7 @@
 .auth-page-title {
   font-size: 28px;
   font-weight: 800;
-  color: #0b1d4d;
+  color: var(--color-text-strong);
   text-align: center;
   margin: 0 0 24px;
 }
@@ -26,7 +26,7 @@
 
 .auth-tabs {
   display: flex;
-  border: 1px solid #d6deef;
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   overflow: hidden;
   margin-bottom: 24px;
@@ -35,8 +35,8 @@
 .auth-tab-button {
   flex: 1;
   border: none;
-  background-color: #ffffff;
-  color: #0b1d4d;
+  background-color: var(--color-surface);
+  color: var(--color-text-strong);
   font-size: 15px;
   font-weight: 600;
   padding: 10px 20px;

@@ -1,15 +1,17 @@
 import { useUserQuery } from '../../entities/user/api/user.api'
 import { ProfileForm } from '../../features/edit-profile/ui/ProfileForm'
 import './ProfilePage.css'
+import { useT } from '../../shared/lib/localeStore'
 
 export function ProfilePage() {
-  const { data: user, isLoading, isError, error } = useUserQuery()
+  const t = useT()
+  const { data: user, isLoading, isError } = useUserQuery()
 
   return (
     <div className="profile-page">
-      <h1 className="profile-page-title">내 정보</h1>
-      {isLoading && <p>불러오는 중...</p>}
-      {isError && <p className="profile-page-error">{error.message}</p>}
+      <h1 className="profile-page-title">{t.profile_title}</h1>
+      {isLoading && <p>{t.loading}</p>}
+      {isError && <p className="profile-page-error">{t.profile_load_error}</p>}
       {user && <ProfileForm user={user} />}
     </div>
   )

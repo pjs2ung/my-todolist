@@ -1,5 +1,6 @@
 import './CategoryFilter.css'
 import type { Category } from '../../../entities/category/api/category.api'
+import { useT } from '../../../shared/lib/localeStore'
 
 export type CategoryFilterProps = {
   categories: Category[]
@@ -8,6 +9,7 @@ export type CategoryFilterProps = {
 }
 
 export function CategoryFilter({ categories, selectedCategoryId, onSelect }: CategoryFilterProps) {
+  const t = useT()
   return (
     <>
       <ul className="category-sidebar">
@@ -17,7 +19,7 @@ export function CategoryFilter({ categories, selectedCategoryId, onSelect }: Cat
             className={selectedCategoryId === undefined ? 'category-sidebar-item category-sidebar-item--active' : 'category-sidebar-item'}
             onClick={() => onSelect(undefined)}
           >
-            전체
+            {t.status_all}
           </button>
         </li>
         {categories.map((category) => (
@@ -37,7 +39,7 @@ export function CategoryFilter({ categories, selectedCategoryId, onSelect }: Cat
         value={selectedCategoryId ?? ''}
         onChange={(e) => onSelect(e.target.value || undefined)}
       >
-        <option value="">전체 카테고리</option>
+        <option value="">{t.category_all}</option>
         {categories.map((category) => (
           <option key={category.id} value={category.id}>
             {category.name}

@@ -1,8 +1,8 @@
 .todo-card {
-  border: 1px solid #d6deef;
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 20px;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   font-family: -apple-system, 'Segoe UI', 'Malgun Gothic', sans-serif;
 }
 
@@ -16,12 +16,12 @@
 .todo-card-title {
   font-size: 18px;
   font-weight: 700;
-  color: #0b1d4d;
+  color: var(--color-text-strong);
   margin: 0;
 }
 
 .todo-card-meta {
   margin-top: 8px;
   font-size: 14px;
-  color: #5b667a;
+  color: var(--color-text-muted);
 }

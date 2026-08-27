@@ -1,8 +1,11 @@
 import type { ApiError } from '../../../shared/api/client'
+import type { Locale } from '../../../shared/lib/i18n'
+import { getMessages } from '../../../shared/lib/i18n'
 
-export function mapDeleteTodoError(error: ApiError | null): string | null {
+export function mapDeleteTodoError(error: ApiError | null, locale: Locale = 'ko'): string | null {
   if (!error) return null
-  if (error.status === 403) return '삭제 권한이 없습니다'
-  if (error.status === 404) return '이미 삭제된 할일입니다'
+  const t = getMessages(locale)
+  if (error.status === 403) return t.delete_forbidden
+  if (error.status === 404) return t.delete_not_found
   return null
 }

@@ -4,6 +4,7 @@ import { DatePicker } from '../../../shared/ui/DatePicker'
 import { useCategoriesQuery } from '../../../entities/category/api/category.api'
 import { mapTodoFormError } from '../model/todoFormError'
 import type { ApiError } from '../../../shared/api/client'
+import { useLocaleStore, useT } from '../../../shared/lib/localeStore'
 
 export type TodoFormValues = {
   title: string
@@ -24,9 +25,11 @@ export type TodoFormProps = {
 const EMPTY_VALUES: TodoFormValues = { title: '', categoryId: '', startDate: '', endDate: '', isDone: false }
 
 export function TodoForm({ mode, initialValues, onSubmit, isPending, error }: TodoFormProps) {
+  const t = useT()
+  const locale = useLocaleStore((s) => s.locale)
   const [values, setValues] = useState<TodoFormValues>(initialValues ?? EMPTY_VALUES)
   const { data: categories } = useCategoriesQuery()
-  const fieldErrors = mapTodoFormError(error)
+  const fieldErrors = mapTodoFormError(error, locale)
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -36,7 +39,7 @@ export function TodoForm({ mode, initialValues, onSubmit, isPending, error }: To
   return (
     <form className="todo-form" onSubmit={handleSubmit}>
       <div className="todo-form-field">
-        <label htmlFor="todo-title">제목</label>
+        <label htmlFor="todo-title">{t.field_title}</label>
         <input
           id="todo-title"
           type="text"
@@ -49,26 +52,26 @@ export function TodoForm({ mode, initialValues, onSubmit, isPending, error }: To
       </div>
 
       <div className="todo-form-field">
-        <label htmlFor="todo-category">카테고리</label>
+        <label htmlFor="todo-category">{t.field_category}</label>
         <select
           id="todo-category"
           value={values.categoryId}
           onChange={(e) => setValues((prev) => ({ ...prev, categoryId: e.target.value }))}
         >
-          <option value="">선택 안 함(기본 적용)</option>
+          <option value="">{t.category_none_option}</option>
           {categories?.map((category) => (
             <option key={category.id} value={category.id}>
               {category.name}
             </option>
           ))}
         </select>
-        <p className="todo-form-hint">선택하지 않으면 '기본' 카테고리가 자동 적용됩니다</p>
+        <p className="todo-form-hint">{t.category_default_hint}</p>
         {fieldErrors.categoryId && <p className="todo-form-field-error">{fieldErrors.categoryId}</p>}
       </div>
 
       <div className="todo-form-row">
         <div className="todo-form-field">
-          <label htmlFor="todo-start-date">시작일</label>
+          <label htmlFor="todo-start-date">{t.field_start_date}</label>
           <DatePicker
             id="todo-start-date"
             value={values.startDate}
@@ -76,7 +79,7 @@ export function TodoForm({ mode, initialValues, onSubmit, isPending, error }: To
           />
         </div>
         <div className="todo-form-field">
-          <label htmlFor="todo-end-date">종료일</label>
+          <label htmlFor="todo-end-date">{t.field_end_date}</label>
           <DatePicker
             id="todo-end-date"
             value={values.endDate}
@@ -96,7 +99,7 @@ export function TodoForm({ mode, initialValues, onSubmit, isPending, error }: To
               checked={values.isDone}
               onChange={(e) => setValues((prev) => ({ ...prev, isDone: e.target.checked }))}
             />
-            완료 처리
+            {t.field_done}
           </label>
         </div>
       )}
@@ -104,7 +107,7 @@ export function TodoForm({ mode, initialValues, onSubmit, isPending, error }: To
       {fieldErrors.form && <p className="todo-form-error">{fieldErrors.form}</p>}
 
       <button type="submit" className="todo-form-submit-button" disabled={isPending}>
-        저장
+        {t.save}
       </button>
     </form>
   )

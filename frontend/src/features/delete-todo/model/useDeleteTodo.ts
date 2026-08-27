@@ -2,9 +2,11 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { deleteTodo } from '../api/deleteTodo.api'
 import { mapDeleteTodoError } from './deleteTodoError'
 import type { ApiError } from '../../../shared/api/client'
+import { useLocaleStore } from '../../../shared/lib/localeStore'
 
 export function useDeleteTodo(onSuccess: () => void, onError?: (message: string) => void) {
   const queryClient = useQueryClient()
+  const locale = useLocaleStore((s) => s.locale)
 
   return useMutation<void, ApiError, string>({
     mutationFn: deleteTodo,
@@ -19,7 +21,7 @@ export function useDeleteTodo(onSuccess: () => void, onError?: (message: string)
       if (error.status === 404) {
         queryClient.invalidateQueries({ queryKey: ['todos'] })
       }
-      onError?.(mapDeleteTodoError(error) ?? error.message)
+      onError?.(mapDeleteTodoError(error, locale) ?? error.message)
     },
   })
 }

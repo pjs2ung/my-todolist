@@ -3,6 +3,7 @@ import { AuthPage } from '../pages/auth-page/AuthPage'
 import { ProfilePage } from '../pages/profile-page/ProfilePage'
 import { TodoListPage } from '../pages/todo-list-page/TodoListPage'
 import { TodoFormPage } from '../pages/todo-form-page/TodoFormPage'
+import { CategoryPage } from '../pages/category-page/CategoryPage'
 import { useAuthStore } from '../entities/session/model/authStore'
 
 function ProtectedRoute() {
@@ -23,6 +24,7 @@ const router = createBrowserRouter([
       { path: '/todos', element: <TodoListPage /> },
       { path: '/todos/new', element: <TodoFormPage /> },
       { path: '/todos/:id/edit', element: <TodoFormPage /> },
+      { path: '/categories', element: <CategoryPage /> },
       { path: '/profile', element: <ProfilePage /> },
     ],
   },

@@ -9,8 +9,12 @@ import { CategoryFilter } from '../../../features/filter-todos/ui/CategoryFilter
 import { StatusFilter } from '../../../features/filter-todos/ui/StatusFilter'
 import { useDeleteTodo } from '../../../features/delete-todo/model/useDeleteTodo'
 import { ConfirmDeleteDialog } from '../../../features/delete-todo/ui/ConfirmDeleteDialog'
+import { ThemeToggle } from '../../../shared/ui/ThemeToggle'
+import { LocaleToggle } from '../../../shared/ui/LocaleToggle'
+import { useT } from '../../../shared/lib/localeStore'
 
 export function TodoListWidget() {
+  const t = useT()
   const { data: categories } = useCategoriesQuery()
   const { filters, setCategoryId, setStatus } = useTodoFilters()
   const { data: todos, isLoading, isError, error } = useTodosQuery(filters)
@@ -30,7 +34,7 @@ export function TodoListWidget() {
 
   const deleteMutation = useDeleteTodo(
     () => {
-      setToast('삭제되었습니다')
+      setToast(t.toast_deleted)
       setDeleteTarget(null)
     },
     (message) => {
@@ -60,20 +64,29 @@ export function TodoListWidget() {
           selectedCategoryId={filters.categoryId}
           onSelect={handleCategorySelect}
         />
+        <div className="todo-list-sidebar-footer">
+          <ThemeToggle />
+          <LocaleToggle />
+        </div>
       </aside>
       <div className="todo-list-main">
         <div className="todo-list-header">
-          <h1 className="todo-list-title">할일 목록</h1>
-          <Link to="/todos/new" className="todo-list-add-button">
-            +<span className="todo-list-add-button-label"> 새 할일 등록</span>
-          </Link>
+          <h1 className="todo-list-title">{t.todo_list_title}</h1>
+          <div className="todo-list-header-actions">
+            <Link to="/categories" className="todo-list-manage-categories-button">
+              {t.manage_categories}
+            </Link>
+            <Link to="/todos/new" className="todo-list-add-button">
+              +<span className="todo-list-add-button-label"> {t.new_todo}</span>
+            </Link>
+          </div>
         </div>
         {toast && <p className="todo-list-toast">{toast}</p>}
         <StatusFilter selectedStatus={filters.status} onSelect={setStatus} />
-        {isLoading && <p>불러오는 중...</p>}
+        {isLoading && <p>{t.loading}</p>}
         {isError && <p className="todo-list-error">{error.message}</p>}
         {!isLoading && !isError && todos?.length === 0 && (
-          <p className="todo-list-empty">할일이 없습니다</p>
+          <p className="todo-list-empty">{t.empty_todos}</p>
         )}
         {!isLoading && !isError && todos && todos.length > 0 && (
           <div className="todo-list-cards">
@@ -87,7 +100,7 @@ export function TodoListWidget() {
                   className="todo-list-card-delete-button"
                   onClick={() => setDeleteTarget({ id: todo.id, title: todo.title })}
                 >
-                  삭제
+                  {t.delete}
                 </button>
               </div>
             ))}

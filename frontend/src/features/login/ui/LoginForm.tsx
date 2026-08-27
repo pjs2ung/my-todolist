@@ -1,11 +1,18 @@
 import { useState } from 'react'
 import './LoginForm.css'
 import { useLogin } from '../model/useLogin'
+import { useT } from '../../../shared/lib/localeStore'
 
 export function LoginForm() {
+  const t = useT()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const mutation = useLogin()
+  const errorMessage = mutation.error
+    ? mutation.error.code === 'UNAUTHORIZED'
+      ? t.error_unauthorized
+      : mutation.error.message
+    : null
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -15,7 +22,7 @@ export function LoginForm() {
   return (
     <form className="auth-form" onSubmit={handleSubmit}>
       <div className="auth-field">
-        <label htmlFor="login-email">이메일</label>
+        <label htmlFor="login-email">{t.field_email}</label>
         <input
           id="login-email"
           type="email"
@@ -25,7 +32,7 @@ export function LoginForm() {
         />
       </div>
       <div className="auth-field">
-        <label htmlFor="login-password">비밀번호</label>
+        <label htmlFor="login-password">{t.field_password}</label>
         <input
           id="login-password"
           type="password"
@@ -34,9 +41,9 @@ export function LoginForm() {
           required
         />
       </div>
-      {mutation.error && <p className="auth-form-error">{mutation.error.message}</p>}
+      {errorMessage && <p className="auth-form-error">{errorMessage}</p>}
       <button type="submit" className="auth-submit-button" disabled={mutation.isPending}>
-        로그인
+        {t.login_submit}
       </button>
     </form>
   )

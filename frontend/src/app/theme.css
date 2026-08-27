@@ -1,0 +1,24 @@
+:root {
+  --color-bg: #f5f7fb;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f5f7fb;
+  --color-text-strong: #0b1d4d;
+  --color-text-muted: #5b667a;
+  --color-border: #d6deef;
+}
+
+:root[data-theme='dark'] {
+  --color-bg: #0f1420;
+  --color-surface: #1a2236;
+  --color-surface-alt: #232d45;
+  --color-text-strong: #eef1f8;
+  --color-text-muted: #9aa6bf;
+  --color-border: #2c3550;
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text-strong);
+  margin: 0;
+}

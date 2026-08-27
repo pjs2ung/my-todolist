@@ -222,7 +222,7 @@
         "properties": {
           "code": {
             "type": "string",
-            "description": "에러 코드 (예: VALIDATION_ERROR, UNAUTHORIZED, TOKEN_EXPIRED, TOKEN_INVALID, FORBIDDEN, NOT_FOUND, EMAIL_TAKEN, INVALID_DATE_RANGE, INVALID_CATEGORY, DEFAULT_CATEGORY_DELETE_FORBIDDEN, CATEGORY_NAME_TAKEN)"
+            "description": "에러 코드 (예: VALIDATION_ERROR, UNAUTHORIZED, TOKEN_EXPIRED, TOKEN_INVALID, FORBIDDEN, NOT_FOUND, EMAIL_TAKEN, INVALID_DATE_RANGE, INVALID_CATEGORY, DEFAULT_CATEGORY_DELETE_FORBIDDEN, DEFAULT_CATEGORY_RENAME_FORBIDDEN, CATEGORY_NAME_TAKEN)"
           },
           "message": {
             "type": "string",
@@ -485,6 +485,50 @@
       }
     },
     "/categories/{id}": {
+      "patch": {
+        "tags": ["Categories"],
+        "summary": "카테고리 이름 수정",
+        "description": "본인 소유 Category의 이름을 수정한다. '기본' Category는 이름을 변경할 수 없다(자동 적용/삭제 로직이 이름 '기본'으로 식별하기 때문). 타인 소유 Category 접근 시 403 (BR-06).",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" },
+            "description": "수정할 Category id"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateCategoryRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "수정 성공",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Category" }
+              }
+            }
+          },
+          "400": {
+            "description": "name 길이 위반, 동일 이름 중복(CATEGORY_NAME_TAKEN), 또는 '기본' Category 이름 변경 시도(DEFAULT_CATEGORY_RENAME_FORBIDDEN)",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
       "delete": {
         "tags": ["Categories"],
         "summary": "카테고리 삭제",

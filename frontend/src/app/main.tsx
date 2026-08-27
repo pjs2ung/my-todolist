@@ -1,12 +1,15 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import './theme.css'
 import { QueryClientProvider } from './providers/QueryClientProvider'
 import { AppRouter } from './router'
 import { refreshAccessToken } from '../shared/api/client'
 import { getAccessToken } from '../shared/api/tokenStore'
 import { useAuthStore } from '../entities/session/model/authStore'
+import { initTheme } from '../shared/lib/useTheme'
 
 async function bootstrap() {
+  initTheme()
   await refreshAccessToken().catch(() => {})
   const token = getAccessToken()
   if (token) {

@@ -7,6 +7,7 @@ import { useCreateTodo } from '../../features/create-todo/model/useCreateTodo'
 import { useUpdateTodo } from '../../features/edit-todo/model/useUpdateTodo'
 import { useDeleteTodo } from '../../features/delete-todo/model/useDeleteTodo'
 import { ConfirmDeleteDialog } from '../../features/delete-todo/ui/ConfirmDeleteDialog'
+import { useT } from '../../shared/lib/localeStore'
 
 export function TodoFormPage() {
   const { id } = useParams<{ id?: string }>()
@@ -18,11 +19,12 @@ export function TodoFormPage() {
 }
 
 function CreateTodoForm() {
+  const t = useT()
   const mutation = useCreateTodo()
 
   return (
     <div className="todo-form-page">
-      <h1 className="todo-form-page-title">할일 등록</h1>
+      <h1 className="todo-form-page-title">{t.todo_form_title_create}</h1>
       <TodoForm
         mode="create"
         onSubmit={(values) =>
@@ -41,19 +43,20 @@ function CreateTodoForm() {
 }
 
 function EditTodoForm({ id }: { id: string }) {
+  const t = useT()
   const { data: todos, isLoading } = useTodosQuery({})
-  const todo = todos?.find((t) => t.id === id)
+  const todo = todos?.find((item) => item.id === id)
   const mutation = useUpdateTodo(id)
   const navigate = useNavigate()
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [deleteError, setDeleteError] = useState<string | null>(null)
   const deleteMutation = useDeleteTodo(
-    () => navigate('/todos', { state: { toast: '삭제되었습니다' } }),
+    () => navigate('/todos', { state: { toast: t.toast_deleted } }),
     setDeleteError
   )
 
   if (isLoading) {
-    return <p>불러오는 중...</p>
+    return <p>{t.loading}</p>
   }
 
   if (!todo) {
@@ -62,7 +65,7 @@ function EditTodoForm({ id }: { id: string }) {
 
   return (
     <div className="todo-form-page">
-      <h1 className="todo-form-page-title">할일 수정</h1>
+      <h1 className="todo-form-page-title">{t.todo_form_title_edit}</h1>
       <TodoForm
         mode="edit"
         initialValues={{
@@ -86,10 +89,10 @@ function EditTodoForm({ id }: { id: string }) {
       />
       <div className="todo-form-page-actions">
         <button type="button" className="todo-form-page-list-button" onClick={() => navigate('/todos')}>
-          목록으로
+          {t.list_button}
         </button>
         <button type="button" className="todo-form-page-delete-button" onClick={() => setConfirmDelete(true)}>
-          삭제
+          {t.delete}
         </button>
       </div>
       {deleteError && <p className="todo-form-page-delete-error">{deleteError}</p>}

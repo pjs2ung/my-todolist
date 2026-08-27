@@ -29,6 +29,12 @@ const deleteCategoryById = (db, categoryId) => db.query(
   [categoryId]
 );
 
+const updateCategoryName = (db, { categoryId, name }) => db.query(
+  `UPDATE categories SET name = $2 WHERE id = $1
+   RETURNING id, user_id AS "userId", name`,
+  [categoryId, name]
+).then((r) => r.rows[0]);
+
 module.exports = {
   insertCategory,
   findCategoriesByUserId,
@@ -36,4 +42,5 @@ module.exports = {
   findDefaultCategoryByUserId,
   reassignTodosToCategory,
   deleteCategoryById,
+  updateCategoryName,
 };
