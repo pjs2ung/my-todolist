@@ -1,6 +1,9 @@
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
+const swaggerUi = require("swagger-ui-express");
+
+const swaggerDocument = require("../swagger.json");
 
 const pool = require("./db/pool");
 const errorHandler = require("./middlewares/errorHandler");
@@ -46,6 +49,10 @@ app.get("/health", async (req, res, next) => {
     next(err);
   }
 });
+
+if (process.env.NODE_ENV === "development") {
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+}
 
 app.use("/api/auth", authRoute);
 app.use("/api/users", usersRoute);

@@ -222,7 +222,7 @@
         "properties": {
           "code": {
             "type": "string",
-            "description": "에러 코드 (예: VALIDATION_ERROR, UNAUTHORIZED, FORBIDDEN, NOT_FOUND, EMAIL_TAKEN, INVALID_DATE_RANGE, INVALID_CATEGORY, DEFAULT_CATEGORY_DELETE_FORBIDDEN, CATEGORY_NAME_TAKEN)"
+            "description": "에러 코드 (예: VALIDATION_ERROR, UNAUTHORIZED, TOKEN_EXPIRED, TOKEN_INVALID, FORBIDDEN, NOT_FOUND, EMAIL_TAKEN, INVALID_DATE_RANGE, INVALID_CATEGORY, DEFAULT_CATEGORY_DELETE_FORBIDDEN, CATEGORY_NAME_TAKEN)"
           },
           "message": {
             "type": "string",
@@ -377,8 +377,7 @@
       "post": {
         "tags": ["Auth"],
         "summary": "로그아웃",
-        "description": "refresh token을 무효화하고 쿠키를 제거한다 (FR-02).",
-        "security": [{ "bearerAuth": [] }],
+        "description": "refresh token 쿠키를 검증해 무효화하고 쿠키를 제거한다 (FR-02). Bearer 인증 아님, refreshToken 쿠키로만 동작.",
         "responses": {
           "204": { "description": "로그아웃 성공 (본문 없음)" },
           "401": { "$ref": "#/components/responses/Unauthorized" }

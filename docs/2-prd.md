@@ -7,6 +7,7 @@
 | 0.1.0 | 2026-08-26 | 최초 작성                                                                                              | -                           |
 | 0.2.0 | 2026-08-26 | 기능 요구사항 ID를 UC-xx에서 FR-xx로 변경(도메인 UC와 매핑 열 추가), 관련 참조(§3/§7/§9/§10) 전체 갱신 | 기능 ID 체계 분리 요청 반영 |
 | 0.3.0 | 2026-08-26 | 인증 방식을 JWT(access token + refresh token)로 확정, §5 보안/§6 기술스택/§7 API(refresh·logout 엔드포인트 추가)/§9 가정 갱신 | 인증 방식 결정 사항 반영 |
+| 0.4.0 | 2026-08-27 | §6 기술 스택에 개발환경 전용 API 문서(swagger-ui-express, `/api-docs`) 항목 추가 | 실제 구현과 docs 정합성 점검 결과 반영 |
 | 0.4.0 | 2026-08-26 | FR-01 적용 규칙에 BR-09('기본' Category 자동 생성) 추가, §4 참고 문구 수정 | 도메인 정의서(1-domain-definition.md) 정합성 검토 결과 반영 |
 
 ## 목차
@@ -106,6 +107,7 @@ PRD의 기능 ID는 FR-01~FR-08을 사용한다(도메인 정의서 UC-ID와 1:1
 - 프론트엔드: React 19 + TypeScript, Zustand(클라이언트 전역 상태: access token 등 인증 상태/UI 상태), TanStack Query(서버 상태 fetch/캐시/동기화 — Todo/Category/User 데이터). access token 만료(401) 시 TanStack Query 에러 핸들링에서 refresh 후 재요청.
 - 백엔드: Node.js + JavaScript + Express, DB 접근은 `pg` 라이브러리로 직접 SQL 작성(ORM 미사용 방침 — 쿼리는 파라미터 바인딩(`$1,$2..`)으로 SQL 인젝션 방지, 재사용 쿼리는 함수로 모듈화). 인증은 JWT(access/refresh token) 기반, 세션 저장소 없이 stateless 처리.
 - DB: PostgreSQL 17.
+- API 문서: `backend/swagger.json`(OpenAPI 3.0) + `swagger-ui-express`로 개발환경(`NODE_ENV=development`)에서만 `/api-docs` 노출. 운영환경에서는 비활성화.
 - 배포/아키텍처: 단일 Express 서버(REST API) + React SPA(정적 빌드 서빙 또는 별도 호스팅), Stateless API + pg Pool로 수평 확장 대비.
 
 ## 7. API 개요 (엔드포인트 수준, 상세 스펙 아님)

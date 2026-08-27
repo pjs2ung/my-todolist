@@ -7,6 +7,7 @@
 | 0.1.0 | 2026-08-26 | 최초 작성 | -         |
 | 0.2.0 | 2026-08-26 | 프론트엔드 디렉토리 구조(§6)를 Feature-Sliced Design(app/pages/widgets/features/entities/shared) 기준으로 전면 개편, §2.1 계층 원칙을 FSD 레이어/import 방향 규칙으로 갱신 | FSD 패턴 적용 요청 반영 |
 | 0.3.0 | 2026-08-26 | §5 환경변수 항목에 `PORT` 로컬 개발 기본값 3000 명시 | backend/swagger.json servers.url과의 정합성 확보(문서에 포트 번호가 없어 발생하는 혼동 방지) |
+| 0.4.0 | 2026-08-27 | §3.1 백엔드 파일명 규칙을 실제 구현(route/controller/service 복수형, query 혼재)에 맞게 수정, §7 백엔드 디렉토리 구조에서 실재하지 않는 `migrations/`·`validate.js` 제거하고 실제 구조(schema.sql 직접 실행, scripts/, swagger.json, 개발전용 /api-docs)로 갱신 | 실제 구현(BE-01~BE-10)과 docs 정합성 점검 결과 반영 |
 
 ## 목차
 
@@ -73,7 +74,7 @@
 ### 3.1 파일명
 
 - 프론트: React 컴포넌트는 `PascalCase.tsx`(`TodoForm.tsx`), 훅은 `camelCase`+`use` 접두(`useTodosQuery.ts`), 순수 유틸은 `camelCase.ts`(`formatDate.ts`).
-- 백엔드: `도메인.계층.js` 패턴 고정 — `todo.route.js`, `todo.controller.js`, `todo.service.js`, `todo.query.js`. 도메인 정의서 §3 엔티티(User/Category/Todo)와 1:1로 파일 세트를 구성한다.
+- 백엔드: `도메인.계층.js` 패턴 고정. route/controller/service는 복수형(`todos.route.js`, `todos.controller.js`, `todos.service.js`, `categories.*`, `users.*`), query는 `category.query.js`/`todo.query.js`(단수)와 `users.query.js`(복수)가 혼재 — 새 파일 추가 시 같은 도메인의 기존 파일명을 따른다. 도메인 정의서 §3 엔티티(User/Category/Todo)와 1:1로 파일 세트를 구성한다.
 
 ### 3.2 함수명
 
@@ -228,11 +229,7 @@ frontend/
 backend/
 ├── src/
 │   ├── db/
-│   │   ├── pool.js              # pg Pool 설정 (PRD §5 max 20)
-│   │   └── migrations/          # SQL 마이그레이션 (users/categories/todos, 인덱스, unique 제약)
-│   │       ├── 001_create_users.sql
-│   │       ├── 002_create_categories.sql
-│   │       └── 003_create_todos.sql
+│   │   └── pool.js              # pg Pool 설정 (PRD §5 max 20). DDL은 마이그레이션 없이 `docs/schema.sql` 단일 파일을 직접 실행한다.
 │   ├── routes/                  # URL 매핑 + 인증 미들웨어 부착
 │   │   ├── auth.route.js        # /api/auth/*
 │   │   ├── users.route.js       # /api/users/me
@@ -249,26 +246,27 @@ backend/
 │   │   ├── categories.service.js # 삭제 시 기본 카테고리 재배정 트랜잭션(BR-08)
 │   │   └── todos.service.js      # 소유권(BR-06), 기본 카테고리 적용(BR-03), 기간 검증(BR-05), 상태 파생(§5)
 │   ├── queries/                  # 순수 SQL 함수 (pg, 파라미터 바인딩)
-│   │   ├── user.query.js
+│   │   ├── auth.query.js
+│   │   ├── users.query.js
 │   │   ├── category.query.js
 │   │   └── todo.query.js
 │   ├── middlewares/
 │   │   ├── auth.middleware.js    # access token 검증, 미인증 401(BR-01)
-│   │   ├── errorHandler.js       # 공통 에러→상태코드 매핑(400/401/403/404)
-│   │   └── validate.js           # 요청 바디 검증 (title 1~100자 등 §3 제약)
+│   │   └── errorHandler.js       # 공통 에러→상태코드 매핑(400/401/403/404)
 │   ├── utils/
 │   │   ├── jwt.js                # access/refresh 토큰 발급/검증
 │   │   ├── password.js           # bcrypt 해시/검증
 │   │   └── todoStatus.js         # 상태 파생 함수 (프론트와 동일 규칙, 테스트 대상)
-│   ├── app.js                    # Express 앱, CORS/미들웨어 등록
+│   ├── app.js                    # Express 앱, CORS/미들웨어 등록, 개발환경 전용 Swagger UI(`/api-docs`, NODE_ENV=development일 때만)
 │   └── server.js                 # 서버 기동, /health 엔드포인트
-├── tests/
-│   ├── todoStatus.test.js        # §4 자동화 대상 1
-│   ├── dateRange.test.js         # §4 자동화 대상 2 (BR-05)
-│   └── defaultCategory.test.js   # §4 자동화 대상 3 (BR-03)
+├── tests/                        # Jest+supertest, 14개 테스트 파일 (§4 자동화 대상: 상태 파생/기간 검증/기본 카테고리 포함 전 계층)
+├── scripts/                       # 1회성 DB 마이그레이션·수동 검증 스크립트
+├── swagger.json                  # OpenAPI 3.0 스펙, 개발환경에서 /api-docs로 서빙
 ├── .env.example
 └── package.json
 ```
+
+요청 바디 검증은 공용 미들웨어 없이 각 controller가 자체 정규식/헬퍼로 처리한다(YAGNI — 검증 규칙이 엔드포인트마다 달라 공통화 이득이 적음).
 
 ---
 
