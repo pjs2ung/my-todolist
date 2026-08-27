@@ -14,5 +14,9 @@ export function useTodoFilters() {
     setFilters((prev) => ({ ...prev, status }))
   }
 
-  return { filters, setCategoryId, setStatus }
+  function resetFilters() {
+    setFilters({})
+  }
+
+  return { filters, setCategoryId, setStatus, resetFilters }
 }

@@ -20,6 +20,7 @@ const messages = {
     theme_light: '☀️ 라이트 모드',
     theme_dark: '🌙 다크 모드',
     language_label: '언어',
+    logout: '로그아웃',
 
     login_tab: '로그인',
     register_tab: '회원가입',
@@ -51,6 +52,10 @@ const messages = {
     status_done_badge: '완료 ✓',
     status_overdue: '지연',
     toast_deleted: '삭제되었습니다',
+    search_placeholder: '제목 검색',
+    date_from_label: '조회 시작일',
+    date_to_label: '조회 종료일',
+    reset_filters: '초기화',
 
     todo_form_title_create: '할일 등록',
     todo_form_title_edit: '할일 수정',
@@ -89,6 +94,7 @@ const messages = {
     theme_light: '☀️ Light mode',
     theme_dark: '🌙 Dark mode',
     language_label: 'Language',
+    logout: 'Log out',
 
     login_tab: 'Log in',
     register_tab: 'Sign up',
@@ -120,6 +126,10 @@ const messages = {
     status_done_badge: 'Done ✓',
     status_overdue: 'Overdue',
     toast_deleted: 'Deleted',
+    search_placeholder: 'Search title',
+    date_from_label: 'From',
+    date_to_label: 'To',
+    reset_filters: 'Reset',
 
     todo_form_title_create: 'New Todo',
     todo_form_title_edit: 'Edit Todo',
@@ -158,6 +168,7 @@ const messages = {
     theme_light: '☀️ ライトモード',
     theme_dark: '🌙 ダークモード',
     language_label: '言語',
+    logout: 'ログアウト',
 
     login_tab: 'ログイン',
     register_tab: '新規登録',
@@ -189,6 +200,10 @@ const messages = {
     status_done_badge: '完了 ✓',
     status_overdue: '期限超過',
     toast_deleted: '削除しました',
+    search_placeholder: 'タイトルで検索',
+    date_from_label: '開始日',
+    date_to_label: '終了日',
+    reset_filters: 'リセット',
 
     todo_form_title_create: 'タスク登録',
     todo_form_title_edit: 'タスク編集',

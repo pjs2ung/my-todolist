@@ -8,9 +8,54 @@
 .todo-list-sidebar {
   width: 200px;
   flex-shrink: 0;
+  /* align-self는 기본값(stretch)을 유지해 이 박스의 높이가 옆의
+     todo-list-main(카드 목록)만큼 늘어나도록 한다. 아래 .todo-list-sidebar-sticky가
+     sticky로 고정될 때 이 늘어난 높이만큼 여유 공간이 생겨, 리스트가 길어져도
+     스크롤 중 사이드바가 위로 밀리지 않는다.
+     주의: position:sticky를 이 요소(stretch되는 flex item) 자신에게 걸면
+     Chromium에서 sticky가 아예 동작하지 않는 현상이 있어, sticky는 한 단계
+     아래의 비-flex-item 자식(.todo-list-sidebar-sticky)에 적용한다. */
+}
+
+.todo-list-sidebar-sticky {
+  position: sticky;
+  top: 24px;
+}
+
+.todo-list-sidebar-inner {
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - 48px);
+  position: relative;
+  height: calc(100vh - 48px);
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.todo-list-sidebar-mascot {
+  position: absolute;
+  top: 66.666%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 76px;
+  height: 76px;
+  border-radius: 16px;
+  background-color: var(--color-surface-alt);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+  pointer-events: none;
+}
+
+.todo-list-sidebar-mascot img {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  border-radius: 10px;
 }
 
 .todo-list-sidebar-footer {
@@ -48,6 +93,19 @@
   gap: 16px;
 }
 
+.todo-list-sticky-toolbar {
+  position: sticky;
+  top: 24px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background-color: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 16px 20px;
+}
+
 .todo-list-header {
   display: flex;
   align-items: center;
@@ -75,6 +133,75 @@
 
 .todo-list-add-button:hover {
   background-color: #1e6fd9;
+}
+
+.todo-list-filter-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.todo-list-status-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.todo-list-reset-button {
+  border: 1px solid var(--color-text-muted);
+  border-radius: 999px;
+  padding: 8px 16px;
+  background-color: transparent;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.todo-list-reset-button:hover {
+  background-color: var(--color-surface);
+}
+
+.todo-list-search-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.todo-list-search-input {
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  color: var(--color-text-strong);
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 14px;
+  outline: none;
+  min-width: 200px;
+}
+
+.todo-list-date-range {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.todo-list-date-range .shared-date-picker {
+  padding: 7px 10px;
+  font-size: 13px;
+}
+
+.todo-list-date-range-separator {
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
+
+.todo-list-search-input:focus {
+  border-color: #2f8cff;
 }
 
 .todo-list-cards {
@@ -142,11 +269,24 @@
 
   .todo-list-sidebar {
     width: 100%;
-    min-height: 0;
+  }
+
+  .todo-list-sidebar-sticky {
+    position: static;
+  }
+
+  .todo-list-sidebar-inner {
+    height: auto;
+    max-height: none;
+    overflow-y: visible;
   }
 
   .todo-list-sidebar-footer {
     margin-top: 0;
+  }
+
+  .todo-list-sidebar-mascot {
+    display: none;
   }
 
   .todo-list-add-button {
