@@ -8,6 +8,7 @@
 | 0.2.0 | 2026-08-26 | 프론트엔드 디렉토리 구조(§6)를 Feature-Sliced Design(app/pages/widgets/features/entities/shared) 기준으로 전면 개편, §2.1 계층 원칙을 FSD 레이어/import 방향 규칙으로 갱신 | FSD 패턴 적용 요청 반영 |
 | 0.3.0 | 2026-08-26 | §5 환경변수 항목에 `PORT` 로컬 개발 기본값 3000 명시 | backend/swagger.json servers.url과의 정합성 확보(문서에 포트 번호가 없어 발생하는 혼동 방지) |
 | 0.4.0 | 2026-08-27 | §3.1 백엔드 파일명 규칙을 실제 구현(route/controller/service 복수형, query 혼재)에 맞게 수정, §7 백엔드 디렉토리 구조에서 실재하지 않는 `migrations/`·`validate.js` 제거하고 실제 구조(schema.sql 직접 실행, scripts/, swagger.json, 개발전용 /api-docs)로 갱신 | 실제 구현(BE-01~BE-10)과 docs 정합성 점검 결과 반영 |
+| 0.5.0 | 2026-08-27 | §6 프론트엔드 디렉토리 구조를 FE-01~FE-10 및 계획 외 확장(카테고리 관리, 다크모드, 다국어, 로그아웃, 검색/날짜필터, 사이드바 마스코트) 반영한 실제 구조로 전면 갱신(`pages/category-page`, `features/logout`, `features/manage-categories`, `shared/lib/{i18n,localeStore,useTheme,authEvents}`, `shared/ui/{ThemeToggle,LocaleToggle}`, `app/theme.css`, `public/sidebar-mascot.svg` 등 추가, 실재하지 않던 `entities/*/model/*.types.ts` 세그먼트 제거) | 실제 구현과 docs 정합성 점검 결과 반영 |
 
 ## 목차
 
@@ -151,76 +152,100 @@ frontend/
 │   ├── app/                          # 앱 초기화 (app 레이어)
 │   │   ├── providers/
 │   │   │   └── QueryClientProvider.tsx
-│   │   ├── router.tsx                 # 라우트 정의 + 인증 가드(BR-01)
-│   │   └── main.tsx
+│   │   ├── router.tsx                 # 라우트 정의, ProtectedRoute/PublicOnlyRoute(BR-01 인증 가드)
+│   │   ├── theme.css                  # 다크/라이트 CSS 변수 토큰(--color-*, [data-theme])
+│   │   └── main.tsx                   # 부팅 시 refresh로 세션 복구 후 렌더
 │   │
-│   ├── pages/                         # 라우트 화면 (와이어프레임 W-01~W-04와 1:1)
+│   ├── pages/                         # 라우트 화면 (와이어프레임 W-01~W-06와 1:1)
 │   │   ├── auth-page/
 │   │   │   └── AuthPage.tsx           # W-01 로그인/회원가입 탭 (features/login, features/register 조합)
 │   │   ├── profile-page/
 │   │   │   └── ProfilePage.tsx        # W-02 회원정보 수정
 │   │   ├── todo-list-page/
 │   │   │   └── TodoListPage.tsx       # W-03 할일 목록/필터링 (widgets/todo-list 배치)
-│   │   └── todo-form-page/
-│   │       └── TodoFormPage.tsx       # W-04 할일 등록/수정
+│   │   ├── todo-form-page/
+│   │   │   └── TodoFormPage.tsx       # W-04 할일 등록/수정
+│   │   └── category-page/
+│   │       └── CategoryPage.tsx       # W-06 카테고리 관리(생성/인라인수정/삭제)
 │   │
 │   ├── widgets/                       # 여러 feature/entity를 조합한 복합 UI 블록
 │   │   └── todo-list/
-│   │       ├── ui/TodoListWidget.tsx  # 카테고리 사이드바 + 상태 필터 + Todo 카드 목록 조합
+│   │       ├── ui/TodoListWidget.tsx  # 사이드바(카테고리필터+다크모드+언어+로그아웃) + 상단 sticky 툴바(제목검색+날짜범위+필터초기화) + Todo 카드 목록
 │   │       └── index.ts
 │   │
 │   ├── features/                      # 사용자 행위 단위 (FR-xx와 대응)
 │   │   ├── login/                     # FR-02
+│   │   │   ├── api/login.api.ts
 │   │   │   ├── ui/LoginForm.tsx
-│   │   │   └── model/useLogin.ts      # 로그인 mutation, access/refresh 저장(entities/session 경유)
+│   │   │   └── model/useLogin.ts      # 로그인 mutation, access token 저장(entities/session 경유)
 │   │   ├── register/                  # FR-01
+│   │   │   ├── api/register.api.ts
 │   │   │   ├── ui/RegisterForm.tsx
-│   │   │   └── model/useRegister.ts   # 이메일 중복(BR-02) 에러 처리
+│   │   │   └── model/{useRegister.ts, registerFieldError.ts}  # 가입 성공 시 자동 로그인, 이메일 중복(BR-02) 에러 매핑
+│   │   ├── logout/                    # FR-02
+│   │   │   ├── api/logout.api.ts
+│   │   │   ├── ui/LogoutButton.tsx
+│   │   │   └── model/useLogout.ts     # 서버 로그아웃 + 클라이언트 세션 정리, W-01로 이동
 │   │   ├── edit-profile/              # FR-03
+│   │   │   ├── api/updateProfile.api.ts
 │   │   │   ├── ui/ProfileForm.tsx
 │   │   │   └── model/useUpdateProfile.ts
 │   │   ├── create-todo/               # FR-04, FR-05
-│   │   │   ├── ui/TodoForm.tsx        # 카테고리 선택(기본 자동적용 안내, BR-03) + 캘린더(FR-05)
-│   │   │   └── model/useCreateTodo.ts # BR-04/BR-05 서버 에러 매핑
+│   │   │   ├── api/createTodo.api.ts
+│   │   │   ├── ui/TodoForm.tsx        # 등록/수정 겸용, 카테고리 선택(기본 자동적용 안내, BR-03) + 캘린더(FR-05)
+│   │   │   └── model/{useCreateTodo.ts, todoFormError.ts}  # BR-04/BR-05 서버 에러 매핑
 │   │   ├── edit-todo/                 # FR-07
+│   │   │   ├── api/updateTodo.api.ts
 │   │   │   └── model/useUpdateTodo.ts
 │   │   ├── delete-todo/               # FR-08
+│   │   │   ├── api/deleteTodo.api.ts
 │   │   │   ├── ui/ConfirmDeleteDialog.tsx  # W-05
-│   │   │   └── model/useDeleteTodo.ts
+│   │   │   └── model/{useDeleteTodo.ts, deleteTodoError.ts}
+│   │   ├── manage-categories/         # FR-04 (W-06)
+│   │   │   ├── api/categoryMutations.api.ts   # POST/PATCH/DELETE /api/categories
+│   │   │   └── model/useManageCategories.ts   # useCreateCategory/useUpdateCategory/useDeleteCategory
 │   │   └── filter-todos/              # FR-06
 │   │       ├── ui/CategoryFilter.tsx
 │   │       ├── ui/StatusFilter.tsx
-│   │       └── model/useTodoFilters.ts
+│   │       └── model/useTodoFilters.ts  # 카테고리/상태(서버 쿼리), resetFilters
 │   │
 │   ├── entities/                      # 도메인 엔티티 (§3 User/Category/Todo)
 │   │   ├── session/                   # 인증 상태 (Zustand, 서버 데이터 아님)
-│   │   │   └── model/authStore.ts     # access token, 로그인 여부(PRD §6)
+│   │   │   └── model/authStore.ts     # access token, isAuthenticated, sessionExpired(PRD §6)
 │   │   ├── user/
-│   │   │   ├── model/user.types.ts
-│   │   │   └── api/user.api.ts        # GET/PATCH /api/users/me, useUserQuery
+│   │   │   └── api/user.api.ts        # User 타입 + GET /api/users/me, useUserQuery
 │   │   ├── category/
-│   │   │   ├── model/category.types.ts
-│   │   │   └── api/category.api.ts    # GET/POST/DELETE /api/categories, useCategoriesQuery
+│   │   │   └── api/category.api.ts    # Category 타입 + GET /api/categories, useCategoriesQuery
 │   │   └── todo/
 │   │       ├── ui/TodoCard.tsx
 │   │       ├── ui/StatusBadge.tsx     # 시작전/진행중/완료/지연 뱃지(§5 색상 규칙)
-│   │       ├── model/todo.types.ts    # Todo, TodoStatus
+│   │       ├── model/todo.types.ts    # Todo 타입
 │   │       ├── model/todoStatus.ts    # startDate/endDate/isDone → TodoStatus 파생 함수(테스트 대상, §4)
-│   │       └── api/todo.api.ts        # GET/POST/PATCH/DELETE /api/todos, useTodosQuery
+│   │       └── api/todo.api.ts        # Todo 목록 조회, useTodosQuery(categoryId?/status?)
 │   │
 │   └── shared/                        # 특정 도메인에 속하지 않는 공통 코드
 │       ├── api/
-│       │   └── client.ts              # 공통 fetch 함수, Authorization 헤더, 401→refresh 인터셉트
+│       │   ├── client.ts              # 공통 fetch 함수, Authorization 헤더, 401→refresh 인터셉트, 세션만료 이벤트 발행
+│       │   └── tokenStore.ts          # access token 메모리 저장(모듈 스코프)
 │       ├── ui/
-│       │   └── DatePicker.tsx         # 범용 캘린더 입력(도메인 무관)
+│       │   ├── DatePicker.tsx         # 범용 캘린더 입력(도메인 무관)
+│       │   ├── ThemeToggle.tsx        # 다크/라이트 토글
+│       │   └── LocaleToggle.tsx       # 언어 선택(ko/en/ja)
 │       └── lib/
-│           └── formatDate.ts
+│           ├── formatDate.ts          # Date ↔ 'YYYY-MM-DD' (타임존 안전)
+│           ├── authEvents.ts          # 세션만료 pub/sub(shared→entities 레이어 역전 방지용)
+│           ├── useTheme.ts            # 다크모드 상태(localStorage)
+│           ├── localeStore.ts         # 언어 상태(zustand, localStorage), useT() 훅
+│           └── i18n.ts                # ko/en/ja 메시지 사전
 │
+├── public/
+│   └── sidebar-mascot.svg             # 사이드바 장식용 오리지널 아이콘
 ├── .env.example
 └── package.json
 ```
 
-- `entities/session`은 서버가 아닌 클라이언트 상태(access token 등)만 다루므로 `api/` 세그먼트가 없다 — 로그인/회원가입 API 호출은 `features/login`, `features/register`의 `model/`에 위치한다.
+- `entities/session`은 서버가 아닌 클라이언트 상태(access token 등)만 다루므로 `api/` 세그먼트가 없다 — 로그인/회원가입 API 호출은 `features/login`, `features/register`의 `api/`에 위치한다.
+- 다크모드/언어는 사용자별 UI 설정으로 특정 도메인에 속하지 않으므로 `entities`가 아닌 `shared/lib`+`shared/ui`에 둔다(로그인 여부와 무관하게 항상 존재).
 - `ConfirmDialog`처럼 삭제 확인에만 쓰이는 UI는 재사용 범위가 `delete-todo` feature로 한정되므로 `shared/ui`가 아닌 `features/delete-todo/ui`에 둔다(범용 UI만 shared로 승격).
 
 ## 7. 백엔드 디렉토리 구조

@@ -9,6 +9,7 @@
 | 0.3.0 | 2026-08-26 | 인증 방식을 JWT(access token + refresh token)로 확정, §5 보안/§6 기술스택/§7 API(refresh·logout 엔드포인트 추가)/§9 가정 갱신 | 인증 방식 결정 사항 반영 |
 | 0.4.0 | 2026-08-27 | §6 기술 스택에 개발환경 전용 API 문서(swagger-ui-express, `/api-docs`) 항목 추가 | 실제 구현과 docs 정합성 점검 결과 반영 |
 | 0.4.0 | 2026-08-26 | FR-01 적용 규칙에 BR-09('기본' Category 자동 생성) 추가, §4 참고 문구 수정 | 도메인 정의서(1-domain-definition.md) 정합성 검토 결과 반영 |
+| 0.5.0 | 2026-08-27 | §7 API 개요 표에 `PATCH /api/categories/:id`(카테고리 이름 수정) 행 추가 | 계획 외 카테고리 관리 화면 구현 반영, 문서-구현 정합성 점검 결과 |
 
 ## 목차
 
@@ -122,6 +123,7 @@ PRD의 기능 ID는 FR-01~FR-08을 사용한다(도메인 정의서 UC-ID와 1:1
 | PATCH  | /api/users/me       | 내 정보 수정                                 | FR-03        |
 | GET    | /api/categories     | 내 카테고리 목록                             | FR-04        |
 | POST   | /api/categories     | 카테고리 생성                                | FR-04        |
+| PATCH  | /api/categories/:id | 카테고리 이름 수정('기본' 제외, BR-10)       | FR-04        |
 | DELETE | /api/categories/:id | 카테고리 삭제('기본' 제외, 소속 Todo 재배정) | FR-04        |
 | GET    | /api/todos          | 내 Todo 목록 (쿼리: categoryId, status)      | FR-06        |
 | POST   | /api/todos          | Todo 생성                                    | FR-04, FR-05 |
